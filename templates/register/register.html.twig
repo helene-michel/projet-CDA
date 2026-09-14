@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+<div  class="container">
+    <div class='row'>
+        <div class="col-12 d-flex flex-column justify-content-center align-items-center">
+            {% for message in app.flashes('infos') %}
+                    <div class="alert alert-info alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+            {% endfor %}
+            <fieldset class="bgForm">
+                    <legend><h1 class="h3 my-3 font-weight-normal text-center">Formulaire d'Inscription</h1></legend>
+                    {{form_start(form,{'attr': {'class': ' '}})}}
+                    <div>
+                        {{ form_label(form.email, 'Adresse email', {'label_attr': {'class': 'form-label fw-bold small'}}) }}
+                        {{form_widget(form.email, {'attr': {'class': 'form-control form-control-fun', 'placeholder': 'vous@exemple.com'}})}}
+                    </div>
+                    <div>
+                        {{ form_label(form.password, 'mot de passe', {'label_attr': {'class': 'form-label fw-bold small'}}) }}
+                        {{form_widget(form.password, {'attr': {'class': 'form-control form-control-fun'}})}}
+                    </div>
+                    <div>
+                        {{ form_label(form.confirm_password, 'confirmation du mot de passe', {'label_attr': {'class': 'form-label fw-bold small'}}) }}
+                        {{form_widget(form.confirm_password, {'attr': {'class': 'form-control form-control-fun'}})}}
+                    </div>
+                    <div>
+                        {{form_row(form.checkSeller)}}
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button type='submit' class='btn-vendre'>Valider</button>
+                    </div>
+                    
+                    {{form_end(form)}}
+            </fieldset>
+        </div>
+    </div>
+</div>
+    
+   
+{% endblock %}

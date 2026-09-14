@@ -1,0 +1,229 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BaseController!{% endblock %}
+
+{% block body %}
+
+<!-- ===================== HERO ===================== -->
+<header class="hero">
+  <div class="container-xxl">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6 hero-fade">
+        <span class="hero-badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+          Plus de 600 couturières partout en France
+        </span>
+        <h1 class="mb-3">La couture faite à la main, juste à côté de chez vous</h1>
+        <p class="lead mb-4">Le comptoire des couturiers réunit des couturières et des ateliers indépendants partout en France, pour des vêtements, tissus et créations sur-mesure, cousus près de chez vous.</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="#categories" class="btn-primary-b">Découvrir les créations</a>
+          <a href="#" class="btn-outline-b">Vendre mes créations</a>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="hero-collage hero-fade" style="animation-delay:.1s">
+          <div class="swatch s1"><div class="weave"></div></div>
+          <div class="swatch s2"><div class="weave"></div></div>
+          <div class="swatch s3"><div class="weave"></div></div>
+          <div class="swatch s4"><div class="weave"></div></div>
+          <div class="float-icon f1" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><circle cx="9" cy="9" r=".6" fill="currentColor"/><circle cx="15" cy="9" r=".6" fill="currentColor"/><circle cx="9" cy="15" r=".6" fill="currentColor"/><circle cx="15" cy="15" r=".6" fill="currentColor"/></svg>
+          </div>
+          <div class="float-icon f2" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21c4-1 7-3 9-5l7-7a2 2 0 0 0-3-3l-7 7c-2 2-4 5-5 9Z"/><path d="M14 6l4 4"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="stitch"></div>
+
+<!-- ===================== BANDE DE CONFIANCE ===================== -->
+<section class="trust-band">
+  <div class="container-xxl">
+    <div class="row gy-3">
+      <div class="col-md-4 trust-item">
+        <span class="pastille"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-7h6v7"/></svg></span>
+        100% fabriqué en France
+      </div>
+      <div class="col-md-4 trust-item">
+        <span class="pastille"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="1"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+        Paiement sécurisé
+      </div>
+      <div class="col-md-4 trust-item">
+        <span class="pastille"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg></span>
+        Vendu directement par l'artisane
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CATÉGORIES ===================== -->
+<section class="py-5 my-4" id="categories">
+  <div class="container-xxl">
+    <div class="section-head">
+      <h2>Par où commencer</h2>
+      <p>Des tissus au vêtement fini, tout ce qu'il faut pour coudre ou faire coudre.</p>
+    </div>
+
+    <div class="mosaic">
+      <a href="#" class="tile t1">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.6" style="position:absolute; top:1rem; right:1rem;"><path d="M8 3l4 3 4-3 2 4-3 2v12H9V9L6 7z"/></svg>
+        <span>Vêtements sur-mesure</span>
+      </a>
+      <a href="#" class="tile t2">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.6" style="position:absolute; top:1rem; right:1rem;"><circle cx="12" cy="12" r="8"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+        <span>Tissus &amp; mercerie</span>
+      </a>
+      <a href="#" class="tile t3">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.6" style="position:absolute; top:1rem; right:1rem;"><path d="M12 4v16M4 12h16"/></svg>
+        <span>Cours &amp; ateliers</span>
+      </a>
+      <a href="#" class="tile t4">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="1.6" style="position:absolute; top:1rem; right:1rem;"><path d="M5 12h14M5 12l4-4M5 12l4 4"/></svg>
+        <span>Retouches</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ATELIERS ===================== -->
+<section class="py-5 my-4" style="background:var(--ivoire-dark)" id="ateliers">
+  <div class="container-xxl py-4">
+    <div class="section-head">
+      <h2>Des créatrices à suivre</h2>
+      <p>Une sélection d'ateliers indépendants, choisis pour la qualité de leur travail.</p>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-sm-6 col-lg-3">
+        <div class="atelier-card">
+          <div class="avatar">FL</div>
+          <div class="region">Bretagne</div>
+          <h3>Atelier Fleur de Lin</h3>
+          <p>Robes et jupes en lin, coupées et cousues à Rennes.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="atelier-card">
+          <div class="avatar">MV</div>
+          <div class="region">Lyon</div>
+          <h3>La Maison Vermillon</h3>
+          <p>Foulards et soieries teints à la main, pièces limitées.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="atelier-card">
+          <div class="avatar">CE</div>
+          <div class="region">Provence</div>
+          <h3>Cousu Main par Élise</h3>
+          <p>Linge de maison et accessoires en coton et lin naturel.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="atelier-card">
+          <div class="avatar">EB</div>
+          <div class="region">Alsace</div>
+          <h3>L'Échoppe à Boutons</h3>
+          <p>Mercerie fine et boutons anciens, sélectionnés à la pièce.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COMMENT ÇA MARCHE ===================== -->
+<section class="py-5 my-4 dots">
+  <div class="container-xxl">
+    <div class="section-head">
+      <h2>Comment ça marche</h2>
+    </div>
+
+    <div class="row etapes gy-4">
+      <div class="col-md-4 etape">
+        <div class="num">1</div>
+        <h3>Parcourez</h3>
+        <p>Explorez les créations, tissus et savoir-faire de couturières partout en France.</p>
+      </div>
+      <div class="col-md-4 etape">
+        <div class="num">2</div>
+        <h3>Échangez</h3>
+        <p>Discutez directement avec l'artisane pour ajuster la taille, le tissu ou la finition.</p>
+      </div>
+      <div class="col-md-4 etape">
+        <div class="num">3</div>
+        <h3>Recevez</h3>
+        <p>Votre pièce est cousue à la main et vous est livrée, prête à porter.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== NEWSLETTER ===================== -->
+<section class="container-xxl my-5">
+  <div class="newsletter px-4 px-md-5">
+    <div class="row align-items-center gy-3">
+      <div class="col-lg-6">
+        <h2 class="mb-2">Les nouvelles créations, chaque semaine</h2>
+        <p class="mb-0" style="color:#D8E0EC; font-size:.92rem;">Une sélection de pièces et d'ateliers, sans spam.</p>
+      </div>
+      <div class="col-lg-6">
+        <form class="d-flex" onsubmit="return false;">
+          <input type="email" placeholder="votre@email.fr" required aria-label="Adresse e-mail">
+          <button type="submit">S'inscrire</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="container-xxl">
+    <div class="row gy-4">
+      <div class="col-lg-4">
+        <div class="brand-mark mb-3">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="12" cy="12" r="7"/><path d="M12 5c-2 2-2 12 0 14M12 5c2 2 2 12 0 14M5 12h14"/>
+          </svg>
+          Bobine
+        </div>
+        <p style="max-width:32ch;">Le marketplace de la couture française : tissus, patrons et créations cousus par des artisanes près de chez vous.</p>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6>Acheter</h6>
+        <a href="#">Vêtements</a>
+        <a href="#">Tissus</a>
+        <a href="#">Patrons</a>
+        <a href="#">Cours</a>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6>Vendre</h6>
+        <a href="#">Devenir créatrice</a>
+        <a href="#">Tarifs</a>
+        <a href="#">Guide de vente</a>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6>Aide</h6>
+        <a href="#">Livraison</a>
+        <a href="#">Retours</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6>Bobine</h6>
+        <a href="#">À propos</a>
+        <a href="#">Mentions légales</a>
+      </div>
+    </div>
+    <div class="footer-bottom d-flex flex-wrap justify-content-between">
+      <span>© 2026 Bobine — tous droits réservés</span>
+      <span>Fait en France</span>
+    </div>
+  </div>
+</footer>
+
+{% endblock %}
+

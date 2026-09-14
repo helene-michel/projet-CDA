@@ -1,0 +1,113 @@
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar navbar-expand-lg navbar-bobine sticky-top py-3 d-flex flex-column" data-controller='menu'>
+  <div class="container-xxl">
+    <a class="brand-mark" href="#">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <circle cx="12" cy="12" r="7"/>
+        <path d="M12 5c-2 2-2 12 0 14M12 5c2 2 2 12 0 14M5 12h14"/>
+      </svg>
+      Le comptoire des couturiers
+    </a>
+
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navBobine" aria-label="Ouvrir le menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navBobine">
+      <ul class="navbar-nav nav-links mx-auto mt-3 mt-lg-0">
+        <li class="nav-item">
+          <a data-action="click->menu#show" class="">Créations</a>
+          
+        </li>
+        <li class="nav-item"><a href="#">Retouches</a></li>
+        <li class="nav-item"><a href="#ateliers">Créatrices</a></li>
+      </ul>
+
+      <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+        <div class="search-pill d-none d-md-flex">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8A8578" stroke-width="2" class="me-2">
+            <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+          </svg>
+          <input type="text" placeholder="Rechercher un tissu, une couturière…">
+        </div>
+        <a href="#" class="icon-btn" aria-label="Mon compte">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <circle cx="12" cy="8" r="4"/><path d="M4 20c1.8-4 6-6 8-6s6.2 2 8 6"/>
+          </svg>
+        </a>
+        <a href="#" class="icon-btn" aria-label="Mon panier">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+            <path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 7Z"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/>
+          </svg>
+        </a>
+        <a href="#" class="btn-vendre">Vendre sur Bobine</a>
+      </div>
+    </div>
+  </div>
+  <div class=" mega-menu" data-menu-target="megaMenu" hidden>
+            <div class="row g-4">
+            <div class="col-lg-2 mega-col">
+                <h6><span class="ic" style="background:var(--rouge-fil)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 4h12l-1 6-3 2 3 2-1 6H6l-1-6 3-2-3-2z"/></svg>
+                </span>Hauts &amp; pulls</h6>
+                <a href="#">Chemises</a>
+                <a href="#">T-shirts &amp; Tops</a>
+                <a href="#">Pulls &amp; Sweats</a>
+              </div>
+              <div class="col-lg-2 mega-col">
+                <h6><span class="ic" style="background:var(--bleu-atelier)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3l4 3 4-3 2 4-3 2v12H9V9L6 7z"/></svg>
+                </span>Le quotidien</h6>
+                <a href="#">Robes</a>
+                <a href="#">Jupes</a>
+                <a href="#">Pantalons</a>
+                <a href="#">Shorts</a>
+                <a href="#">Combinaisons</a>
+              </div>
+
+              <div class="col-lg-2 mega-col">
+                <h6><span class="ic" style="background:var(--rouge-fil)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 4h12l-1 6-3 2 3 2-1 6H6l-1-6 3-2-3-2z"/></svg>
+                </span>Hauts &amp; pulls</h6>
+                <a href="#">Chemises</a>
+                <a href="#">T-shirts &amp; Tops</a>
+                <a href="#">Pulls &amp; Sweats</a>
+              </div>
+
+              <div class="col-lg-2 mega-col">
+                <h6><span class="ic" style="background:var(--dore)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-7h6v7"/></svg>
+                </span>Vestes &amp; extérieur</h6>
+                <a href="#">Vestes</a>
+                <a href="#">Manteaux</a>
+                <a href="#">Vêtements de sport</a>
+                <a href="#">Maillots de bain</a>
+              </div>
+
+              <div class="col-lg-2 mega-col">
+                <h6><span class="ic" style="background:var(--bleu-atelier-dark)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg>
+                </span>Occasions particulières</h6>
+                <a href="#">Vêtements de cérémonie</a>
+                <a href="#">Vêtements pour enfants</a>
+                <a href="#">Accessoires</a>
+              </div>
+              <div class="col-lg-2 mega-col">
+                <h6><span class="ic" style="background:var(--bleu-atelier-dark)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg>
+                </span>Occasions particulières</h6>
+                <a href="#">Vêtements de cérémonie</a>
+                <a href="#">Vêtements pour enfants</a>
+                <a href="#">Accessoires</a>
+              </div>
+            </div>
+
+            <div class="mega-promo">
+              <div>
+                <strong>Le vestiaire enfant arrive sur Bobine</strong>
+                <p>Petites séries cousues à la main, en coton bio français.</p>
+              </div>
+              <a href="#">Découvrir</a>
+            </div>
+          </div>
+</nav>
