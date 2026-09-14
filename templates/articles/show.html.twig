@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ArticlesController!{% endblock %}
+
+{% block body %}
+
+
+
+        {% for productTag in products.tags %}
+            <div>
+                {{ dump(productTag) }}
+            </div>
+        {% endfor %}
+{% endblock %}

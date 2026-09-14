@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ArticlesController!{% endblock %}
+
+{% block body %}
+
+    {% for product in category.products %}
+        <div>
+            <p>{{ product.nom }}</p>
+            <a href="{{ path('app_article', {id:product.id})}}">Détail du produit</a>
+            {{ dump(product) }}
+        </div>
+    {% endfor %}
+    {% endblock %}
