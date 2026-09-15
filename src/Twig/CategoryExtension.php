@@ -19,4 +19,9 @@ class CategoryExtension {
 
         return $this->entityManager->getRepository(CategoryGroup::class)->findAll();
     }
+
+    #[AsTwigFunction('getTagsByCategory')]
+    function getTagsByCategory(Category $category){
+
+    }
 }

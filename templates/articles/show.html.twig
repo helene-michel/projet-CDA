@@ -8,6 +8,7 @@
 
         {% for productTag in products.tags %}
             <div>
+                <h2>{{ productTag.nom }}</h2>
                 {{ dump(productTag) }}
             </div>
         {% endfor %}
