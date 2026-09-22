@@ -1,5 +1,5 @@
 <!-- ===================== NAVBAR ===================== -->
-<nav class="navbar navbar-expand-lg navbar-bobine sticky-top py-3 d-flex flex-column" data-controller='menu'>
+<nav class="navbar navbar-expand-lg navbar-lcdc sticky-top py-3 d-flex flex-column" data-controller='menu'>
     <div class="container-xxl">
         <a class="brand-mark" href="#">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -9,15 +9,15 @@
             Le comptoire des couturiers
         </a>
 
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navBobine"
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navlcdc"
                 aria-label="Ouvrir le menu">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navBobine">
+        <div class="collapse navbar-collapse" id="navlcdc">
             <ul class="navbar-nav nav-links mx-auto mt-3 mt-lg-0">
                 <li class="nav-item">
-                    <a data-action="click->menu#show" class="">Créations</a>
+                    <a data-action="click->menu#show" class="">Articles</a>
 
 
                 </li>
@@ -48,79 +48,11 @@
                         <path d="M8 7V5a4 4 0 0 1 8 0v2"/>
                     </svg>
                 </a>
-                <a href="#" class="btn-vendre">Vendre sur Bobine</a>
+                <a href="#" class="btn-vendre">Commencer à vendre</a>
             </div>
         </div>
     </div>
     <div class=" mega-menu" data-menu-target="megaMenu" hidden>
-{#        <div class="row g-4">#}
-{#            <div class="col-lg-2 mega-col">#}
-{#                <h6><span class="ic" style="background:var(--rouge-fil)">#}
-{#                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path#}
-{#                          d="M6 4h12l-1 6-3 2 3 2-1 6H6l-1-6 3-2-3-2z"/></svg>#}
-{#                </span>Hauts &amp; pulls#}
-{#                </h6>#}
-{#                <a href="#">Chemises</a>#}
-{#                <a href="#">T-shirts &amp; Tops</a>#}
-{#                <a href="#">Pulls &amp; Sweats</a>#}
-{#            </div>#}
-{#            <div class="col-lg-2 mega-col">#}
-{#                <h6><span class="ic" style="background:var(--bleu-atelier)">#}
-{#                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path#}
-{#                          d="M8 3l4 3 4-3 2 4-3 2v12H9V9L6 7z"/></svg>#}
-{#                </span>Le quotidien#}
-{#                </h6>#}
-{#                <a href="#">Robes</a>#}
-{#                <a href="#">Jupes</a>#}
-{#                <a href="#">Pantalons</a>#}
-{#                <a href="#">Shorts</a>#}
-{#                <a href="#">Combinaisons</a>#}
-{#            </div>#}
-
-{#            <div class="col-lg-2 mega-col">#}
-{#                <h6><span class="ic" style="background:var(--rouge-fil)">#}
-{#                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path#}
-{#                          d="M6 4h12l-1 6-3 2 3 2-1 6H6l-1-6 3-2-3-2z"/></svg>#}
-{#                </span>Hauts &amp; pulls#}
-{#                </h6>#}
-{#                <a href="#">Chemises</a>#}
-{#                <a href="#">T-shirts &amp; Tops</a>#}
-{#                <a href="#">Pulls &amp; Sweats</a>#}
-{#            </div>#}
-
-{#            <div class="col-lg-2 mega-col">#}
-{#                <h6><span class="ic" style="background:var(--dore)">#}
-{#                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path#}
-{#                          d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-7h6v7"/></svg>#}
-{#                </span>Vestes &amp; extérieur#}
-{#                </h6>#}
-{#                <a href="#">Vestes</a>#}
-{#                <a href="#">Manteaux</a>#}
-{#                <a href="#">Vêtements de sport</a>#}
-{#                <a href="#">Maillots de bain</a>#}
-{#            </div>#}
-
-{#            <div class="col-lg-2 mega-col">#}
-{#                <h6><span class="ic" style="background:var(--bleu-atelier-dark)">#}
-{#                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle#}
-{#                          cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg>#}
-{#                </span>Occasions particulières#}
-{#                </h6>#}
-{#                <a href="#">Vêtements de cérémonie</a>#}
-{#                <a href="#">Vêtements pour enfants</a>#}
-{#                <a href="#">Accessoires</a>#}
-{#            </div>#}
-{#            <div class="col-lg-2 mega-col">#}
-{#                <h6><span class="ic" style="background:var(--bleu-atelier-dark)">#}
-{#                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle#}
-{#                          cx="12" cy="12" r="8"/><path d="M12 4v16M4 12h16"/></svg>#}
-{#                </span>Occasions particulières#}
-{#                </h6>#}
-{#                <a href="#">Vêtements de cérémonie</a>#}
-{#                <a href="#">Vêtements pour enfants</a>#}
-{#                <a href="#">Accessoires</a>#}
-{#            </div>#}
-{#        </div>#}
         <div class="row g-4">
             {% for catGroup in getGroup() %}
                 <div class="col-lg-2 mega-col">
@@ -139,7 +71,7 @@
         </div>
         <div class="mega-promo">
             <div>
-                <strong>Le vestiaire enfant arrive sur Bobine</strong>
+                <strong>Le vestiaire bambin arrive sur Le comptoire des coutiriers</strong>
                 <p>Petites séries cousues à la main, en coton bio français.</p>
             </div>
             <a href="#">Découvrir</a>

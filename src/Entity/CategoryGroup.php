@@ -6,6 +6,7 @@ use App\Repository\CategoryGroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: CategoryGroupRepository::class)]
 class CategoryGroup
@@ -21,7 +22,7 @@ class CategoryGroup
     /**
      * @var Collection<int, Category>
      */
-    #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'categoryGroup')]
+    #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'categoryGroup', cascade: ['persist'])]
     private Collection $Category;
 
     public function __construct()
@@ -49,6 +50,7 @@ class CategoryGroup
     /**
      * @return Collection<int, Category>
      */
+    #[Ignore]
     public function getCategory(): Collection
     {
         return $this->Category;

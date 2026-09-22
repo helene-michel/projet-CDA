@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProductsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductsRepository::class)]
@@ -18,11 +19,19 @@ class Products
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
+
     #[ORM\Column]
     private ?float $prix_ht = null;
 
     #[ORM\Column]
     private ?float $TVA = null;
+    /**
+     * @var list<string>
+     */
+     #[ORM\Column]
+    private array $image = [];
 
     /**
      * @var Collection<int, Tags>
@@ -57,7 +66,17 @@ class Products
 
         return $this;
     }
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
 
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
     public function getPrixHt(): ?float
     {
         return $this->prix_ht;
@@ -126,6 +145,18 @@ class Products
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getImage(): ?array
+    {
+        return $this->image;
+    }
+
+    public function setImage(array $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

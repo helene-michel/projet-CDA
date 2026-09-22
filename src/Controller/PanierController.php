@@ -18,4 +18,15 @@ final class PanierController extends AbstractController
             'controller_name' => 'PanierController',
         ]);
     }
+
+    #[Route('/panier/add/{id}', name: 'app_panier_add', options:['expose'=>true])]
+    public function add(
+        Products $product
+    ): Response
+    {
+        dd($product);
+        return $this->render('panier/list.html.twig', [
+            'controller_name' => 'PanierController',
+        ]);
+    }
 }

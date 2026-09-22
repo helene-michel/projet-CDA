@@ -3,7 +3,6 @@
             {% block title %}Hello ArticlesController!{% endblock %}
 
             {% block body %}
-
 <header class="page-head">
     <div class="container-xxl">
         <div class="breadcrumb-b"><a href="#">Accueil</a> / <span>Vêtements sur-mesure</span></div>
@@ -13,35 +12,42 @@
             100% cousu par des créatrices françaises
             </span>
         <h1>Toutes les créations</h1>
-        <p class="count">128 pièces disponibles, cousues à la main partout en France.</p>
+        <p class="count"> 0 pièces disponibles, cousues à la main partout en France.</p>
     </div>
 </header>
 <!-- ===================== CONTENU ===================== -->
-<section class="container-xxl pb-5">
+<section 
+    class="container-xxl pb-5"
+    data-controller="filter" 
+    data-filter-route-value="{{ absolute_url(path('app_articles_load', {id:category.id})) }}" 
+    data-filter-min-value="0" 
+    data-filter-max-value="400" 
+    data-filter-csrf-value="{{ csrf_token('products_load') }}"
+>
     <div class="row g-4">
 
         <!-- FILTRES -->
         <aside class="col-lg-3">
-            <div class="filters" data-controller="filter" data-filter-route-value="{{ absolute_url(path('app_articles', {id:category.id})) }}">
+            <div class="filters">
                 <h2>Filtrer</h2>
                 <div class="filter-group">
                     <h3>Prix</h3>
-                    <input type="range" class="form-range" min="20" max="400" value="220">
-                    <div class="price-values"><span>20 €</span><span>400 €</span></div>
+                    <input type="range" min="0" max="400" step="10" class="form-range" data-action="input->filter#priceFilter">
+                    <div class="price-values"><span>0 €</span><span>400 €</span></div>
                 </div>
 
                 <div class="filter-group">
                     <h3>Caractéristiques</h3>
                 </div>
-                <div class="filter-group">
+                <div class="filter-group my-3">
                     <div class="filter-search">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8578" stroke-width="2">
                             <circle cx="11" cy="11" r="7"/>
                             <path d="M21 21l-4.3-4.3"/>
                         </svg>
-                        <input type="text" id="matiereSearch" placeholder="Rechercher une matière…">
+                        <input type="text" id="matiereSearch" data-action="input->filter#matiereSearch" placeholder="Rechercher une matière…">
                     </div>
-                    <div class="filter-scroll" id="matiereList" >
+                    <div class="filter-scroll" id="matiereList" data-filter-target="matiereList">
                         {% for tag in tags %}
                             <div class="form-check {{ (loop.index >6)?"filter-extra" }} ">
                                 <input class="form-check-input" type="checkbox"  data-action="click->filter#filterTag" data-id="{{ tag.id }}">
@@ -49,57 +55,31 @@
                             </div>
                         {% endfor %}
                     </div>
-                    <button type="button" class="filter-more" id="matiereToggle">Voir les 44 matières</button>
+                    <button type="button" class="filter-more" id="matiereToggle" data-filter-target="matiereToggle" data-action="click->filter#matiereToggle">Voir toutes les matières</button>
                 </div>
-                <div class="filter-group">
-                    <div class="badge-mif">
-                        <span>Fabriqué en France</span>
-                        <div class="form-check form-switch mb-0">
-                            <input class="form-check-input" type="checkbox" role="switch" checked>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="btn-reset">Réinitialiser les filtres</button>
+                <a class="btn-reset" href="{{ path('app_articles', {id:category.id}) }}">Réinitialiser les filtres</a>
             </div>
         </aside>
         <!-- LISTE DES CRÉATIONS -->
         <div class="col-lg-9">
             <div class="toolbar">
-                <span style="font-size:.88rem; color:#5B6472;">128 résultats</span>
+                <span style="font-size:.88rem; color:#5B6472;">0 résultats</span>
                 <div class="d-flex align-items-center gap-3">
                     <select>
-                        <option>Trier par : pertinence</option>
                         <option>Prix croissant</option>
                         <option>Prix décroissant</option>
                         <option>Nouveautés</option>
                     </select>
-                    <div class="view-toggle">
-                        <button class="active" aria-label="Vue grille">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                 stroke-width="1.8">
-                                <rect x="3" y="3" width="7" height="7"/>
-                                <rect x="14" y="3" width="7" height="7"/>
-                                <rect x="3" y="14" width="7" height="7"/>
-                                <rect x="14" y="14" width="7" height="7"/>
-                            </svg>
-                        </button>
-                        <button aria-label="Vue liste">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                 stroke-width="1.8">
-                                <path d="M4 6h16M4 12h16M4 18h16"/>
-                            </svg>
-                        </button>
-                    </div>
                 </div>
             </div>
-            <div class="row g-4">
-                {% for product in category.products %}
+            <div data-filter-target="results" class="row g-4 d-none"></div>
+            <div data-filter-target="skeleton" class="row g-4">
+                {% for i in 1..8 %}
                     <div class="col-sm-6 col-lg-4">
                         <div class="product-card">
                             <div class="product-img p-bleu">
                                 <div class="weave"></div>
-                                <span class="badge-fait-main">promo</span>
+                                <span class="badge-fait-main"></span>
                                 <a href="#" class="fav" aria-label="Ajouter aux favoris">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                          stroke-width="1.8">
@@ -108,46 +88,20 @@
                                 </a>
                             </div>
                             <div class="product-body">
-                                <span class="product-region">Bretagne</span>
-                                <h3 class="product-title">{{ product.nom }}</h3>
-                                <span class="product-creator">Atelier Fleur de Lin</span>
-                                <span class="product-price">89 €</span>
+                                <h3 class="product-title"></h3>
+                                <span class="product-creator"></span>
+                                <span class="product-price"></span>
                                 <div class="product-footer">
 
                                     <span class="product-rating">
-                                        <a href="{{ path('app_article', {id:product.id}) }}">Détail du produit</a>
-                                        <a href="{{ path('app_panier', {id:product.id}) }}">Ajouter au panier</a>
+                                        <a href= # class="btn-outline-b">Détail</a>
+                                        <a href= # class="btn-primary-b">Panier</a>
                                     </span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                {% endfor %}
-                <script>
-                    const matiereList = document.getElementById('matiereList');
-                    const matiereToggle = document.getElementById('matiereToggle');
-                    const matiereSearch = document.getElementById('matiereSearch');
-
-                    matiereToggle.addEventListener('click', () => {
-                        const expanded = matiereList.classList.toggle('expanded');
-                        matiereToggle.textContent = expanded ? 'Voir moins' : 'Voir les 44 matières';
-                    });
-
-                    matiereSearch.addEventListener('input', () => {
-                        const query = matiereSearch.value.trim().toLowerCase();
-                        const items = matiereList.querySelectorAll('.form-check');
-                        if (query) {
-                            matiereList.classList.add('expanded');
-                            matiereToggle.style.display = 'none';
-                        } else {
-                            matiereToggle.style.display = '';
-                        }
-                        items.forEach(item => {
-                            const label = item.querySelector('label').textContent.toLowerCase();
-                            item.style.display = (!query || label.includes(query)) ? 'block' : 'none';
-                        });
-                    });
-                </script>
-                <script
-                    src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+                {% endfor %} 
+                
+                
                 {% endblock %}

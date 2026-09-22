@@ -4,12 +4,214 @@
 
 {% block body %}
 
+<!-- ===================== FIL D'ARIANE ===================== -->
+<div class="container-xxl">
+  <div class="breadcrumb-simple"><a href="#">Accueil</a> / <a href="#">Vêtements sur-mesure</a> / <a href="#">Robes</a> / <span>Robe en lin Camille</span></div>
+</div>
 
+<!-- ===================== PRODUIT ===================== -->
+<section class="container-xxl py-4">
+  <div class="row g-5">
 
-        {% for productTag in products.tags %}
-            <div>
-                <h2>{{ productTag.nom }}</h2>
-                {{ dump(productTag) }}
+    <!-- GALERIE -->
+    <div class="col-lg-6">
+      <div class="gallery-main p-bleu weave" id="galleryMain">
+        <span class="badge-fait-main">Fait main</span>
+      </div>
+      <div class="gallery-thumbs">
+        <div class="thumb active p-bleu weave" data-color="p-bleu" onclick="setGallery(this)"></div>
+        <div class="thumb p-rouge weave" data-color="p-rouge" onclick="setGallery(this)"></div>
+        <div class="thumb p-sable weave" data-color="p-sable" onclick="setGallery(this)"></div>
+        <div class="thumb p-dore weave" data-color="p-dore" onclick="setGallery(this)"></div>
+      </div>
+    </div>
+
+    <!-- INFOS -->
+    <div class="col-lg-6">
+        <div>
+            <h1 class="product-title-lg">{{ products.nom }}</h1>
+            
+            <div class="creator-line">
+                <span class="avatar-sm">FL</span><!--ajouter avatar du seller plutot que les initiales-->
+                    <a href="#">{{ products.User.nom }} {{ products.User.prenom }}</a>
             </div>
-        {% endfor %}
+        </div>
+        <div class="price-big serif">{{ products.prixht }} €</div>
+
+        <p style="color:#4B5563; max-width:48ch; margin-bottom:1.6rem;">{{ products.description }}</p>      
+      <div class="option-label">Taille</div>
+      <div class="size-group">
+        <div class="size-pill">XS</div>
+        <div class="size-pill active">S</div>
+        <div class="size-pill">M</div>
+        <div class="size-pill">L</div>
+        <div class="size-pill">XL</div>
+      </div>
+
+      <div class="option-label">Coloris</div>
+      <div class="color-group">
+        <div class="color-dot active" style="background:var(--bleu-atelier-dark)"></div>
+        <div class="color-dot" style="background:var(--sable)"></div>
+        <div class="color-dot" style="background:var(--rouge-fil)"></div>
+      </div>
+
+      <div class="qty-row">
+        <div class="qty-stepper">
+          <button type="button" aria-label="Diminuer">−</button>
+          <span>1</span>
+          <button type="button" aria-label="Augmenter">+</button>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn-primary-b btn-block">Ajouter au panier</button>
+      </div>
+
+      <div class="mini-trust">
+        <div class="item"><span class="pastille" style="background:var(--bleu-atelier)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-7h6v7"/></svg></span>Cousue à la commande, expédiée sous 7 jours</div>
+        <div class="item"><span class="pastille" style="background:var(--rouge-fil)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="1"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>Paiement sécurisé</div>
+        <div class="item"><span class="pastille" style="background:var(--dore)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg></span>Cousue à Rennes par Atelier Fleur de Lin</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ONGLETS -->
+  <div class="tabs-nav">
+    <button class="active" onclick="setTab(this,'desc')">Description</button>
+    <button onclick="setTab(this,'compo')">Composition &amp; entretien</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-desc">
+    <p>{{ products.description }}</p>
+    <p>Comptez 5 à 7 jours de confection avant expédition.</p>
+  </div>
+
+  <div class="tab-panel" id="tab-compo">
+    <ul>
+      <li>100% lin lavé, origine France</li>
+      <li>Doublure en coton bio</li>
+      <li>Lavage à 30°C, cycle délicat</li>
+      <li>Repassage à température moyenne, envers du tissu</li>
+      <li>Ne pas mettre au sèche-linge</li>
+    </ul>
+  </div>
+
+  <!-- CRÉATRICE -->
+  <div class="creator-spotlight">
+    <span class="avatar-lg">FL</span>
+    <div>
+      <h3>Atelier Fleur de Lin</h3>
+      <p>Couturière installée à Rennes depuis 2018, spécialisée dans les vêtements en lin français. Plus de 600 pièces cousues à la main pour ses clientes.</p>
+    </div>
+    <a href="#" class="btn-outline-b">Voir la boutique</a>
+  </div>
+
+  {# <!-- VOUS AIMEREZ AUSSI -->
+  <div class="section-head compact">
+    <h2>Vous aimerez aussi</h2>
+  </div>
+  <div class="row g-4">
+    <div class="col-sm-6 col-lg-3">
+      <div class="product-card">
+        <div class="product-img p-rouge weave"><a href="#" class="fav" aria-label="Favoris"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/></svg></a></div>
+        <div class="product-body">
+          <span class="product-title">Foulard en soie Vermillon</span>
+          <span class="product-creator">La Maison Vermillon</span>
+          <div class="product-footer"><span class="product-price">45 €</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="product-card">
+        <div class="product-img p-sable weave"><a href="#" class="fav" aria-label="Favoris"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/></svg></a></div>
+        <div class="product-body">
+          <span class="product-title">Jupe évasée en coton bio</span>
+          <span class="product-creator">Atelier Fleur de Lin</span>
+          <div class="product-footer"><span class="product-price">62 €</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="product-card">
+        <div class="product-img p-dore weave"><a href="#" class="fav" aria-label="Favoris"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/></svg></a></div>
+        <div class="product-body">
+          <span class="product-title">Sac en lin brodé</span>
+          <span class="product-creator">Cousu Main par Élise</span>
+          <div class="product-footer"><span class="product-price">38 €</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="product-card">
+        <div class="product-img p-bleudark weave"><a href="#" class="fav" aria-label="Favoris"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/></svg></a></div>
+        <div class="product-body">
+          <span class="product-title">Chemisier en popeline</span>
+          <span class="product-creator">La Maison Vermillon</span>
+          <div class="product-footer"><span class="product-price">75 €</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> #}
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="container-xxl">
+    <div class="row gy-4">
+      <div class="col-lg-4">
+        <div class="brand-mark mb-3">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="7"/><path d="M12 5c-2 2-2 12 0 14M12 5c2 2 2 12 0 14M5 12h14"/></svg>
+          Bobine
+        </div>
+        <p style="max-width:32ch;">Le marketplace de la couture française : tissus, patrons et créations cousus par des artisanes près de chez vous.</p>
+      </div>
+      <div class="col-6 col-lg-2"><h6>Acheter</h6><a href="#">Vêtements</a><a href="#">Tissus</a><a href="#">Patrons</a><a href="#">Cours</a></div>
+      <div class="col-6 col-lg-2"><h6>Vendre</h6><a href="#">Devenir créatrice</a><a href="#">Tarifs</a><a href="#">Guide de vente</a></div>
+      <div class="col-6 col-lg-2"><h6>Aide</h6><a href="#">Livraison</a><a href="#">Retours</a><a href="#">Contact</a></div>
+      <div class="col-6 col-lg-2"><h6>Bobine</h6><a href="#">À propos</a><a href="#">Mentions légales</a></div>
+    </div>
+    <div class="footer-bottom d-flex flex-wrap justify-content-between">
+      <span>© 2026 Bobine — tous droits réservés</span>
+      <span>Fait en France</span>
+    </div>
+  </div>
+</footer>
+<script>
+  function setGallery(el){
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const main = document.getElementById('galleryMain');
+    main.classList.remove('p-bleu','p-rouge','p-sable','p-dore','p-bleudark');
+    main.classList.add(el.dataset.color);
+  }
+
+  function setTab(btn, id){
+    document.querySelectorAll('.tabs-nav button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+
+  document.querySelectorAll('.size-pill').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('.size-pill').forEach(s => s.classList.remove('active'));
+      p.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.color-dot').forEach(d => {
+    d.addEventListener('click', () => {
+      document.querySelectorAll('.color-dot').forEach(c => c.classList.remove('active'));
+      d.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.qty-stepper button').forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      const span = btn.parentElement.querySelector('span');
+      let val = parseInt(span.textContent);
+      val = i === 0 ? Math.max(1, val - 1) : val + 1;
+      span.textContent = val;
+    });
+  });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 {% endblock %}

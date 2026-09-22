@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\Products;
+use App\Entity\Tags;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,9 +18,36 @@ class ProductsRepository extends ServiceEntityRepository
         parent::__construct($registry, Products::class);
     }
 
+    public function getByCategoryAndTags(?int $category=null, ?array $tags=[]):array {
+        $q = $this->createQueryBuilder('p');
+
+        if($tags){
+            foreach($tags as $tag){
+                $q
+                ->innerJoin('p.Tags', 't')
+                ->andWhere('t.id = :tag')
+                ->setParameter('tag', $tag)
+            ;
+            }
+            
+        }
+
+        if($category){
+            $q
+                ->andWhere('p.category = :cat')
+                ->setParameter('cat', $category)
+            ;
+        }
+             
+        return $q->getQuery()->getResult();
+    }
+
+
     //    /**
     //     * @return Products[] Returns an array of Products objects
     //     */
+
+
     //    public function findByExampleField($value): array
     //    {
     //        return $this->createQueryBuilder('p')

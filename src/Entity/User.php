@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -48,13 +49,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Adress>
      */
-    #[ORM\OneToMany(targetEntity: Adress::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Adress::class, mappedBy: 'user', cascade:['persist', 'remove'])]
     private Collection $adresse;
 
     /**
      * @var Collection<int, Products>
      */
-    #[ORM\OneToMany(targetEntity: Products::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Products::class, mappedBy: 'user', cascade:['persist', 'remove'])]
     private Collection $products;
 
     public function __construct()
@@ -190,6 +191,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Adress>
      */
+    #[Ignore]
     public function getAdresse(): Collection
     {
         return $this->adresse;
@@ -220,6 +222,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Products>
      */
+    #[Ignore]
     public function getProducts(): Collection
     {
         return $this->products;
