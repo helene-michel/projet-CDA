@@ -28,7 +28,7 @@
 
     <a href="{{ path('seller_app_products_index') }}">back to list</a>
 
-    <a href="{{ path('seller_app_products_edit', {'id': product.id}) }}">edit</a>
+    <a href="{{ path('seller_app_products_edit', {'id': product.id}) }}">{{ ux_icon('lucide:pencil') }}</a>
 
     {{ include('products/_delete_form.html.twig') }}
 {% endblock %}

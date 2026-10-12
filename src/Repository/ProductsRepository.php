@@ -18,7 +18,7 @@ class ProductsRepository extends ServiceEntityRepository
         parent::__construct($registry, Products::class);
     }
 
-    public function getByCategoryAndTags(?int $category=null, ?array $tags=[]):array {
+    public function getByCategoryAndTags(?int $category=null, ?array $tags=[], ?int $price=null, ?string $priceOrder=null):array {
         $q = $this->createQueryBuilder('p');
 
         if($tags){
@@ -38,35 +38,28 @@ class ProductsRepository extends ServiceEntityRepository
                 ->setParameter('cat', $category)
             ;
         }
-             
+         
+        if($price){
+            $q
+                ->andWhere('p.prix_ht < :price')
+                ->setParameter('price', $price)
+            ;
+        }
+        if($priceOrder){
+            $q
+                ->orderBy('p.prix_ht', $priceOrder)
+            ;
+        }
         return $q->getQuery()->getResult();
     }
 
-
-    //    /**
-    //     * @return Products[] Returns an array of Products objects
-    //     */
-
-
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Products
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+public function priceMax(Category $category){
+    return $this->createQueryBuilder('p')
+        ->select('MAX(p.prix_ht)')
+        ->andWhere('p.category = :cat')
+        ->setParameter('cat', $category)
+        ->getQuery()
+        ->getSingleScalarResult()
+    ;
+}
 }

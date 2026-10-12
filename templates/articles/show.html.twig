@@ -76,26 +76,29 @@
   </div>
 
   <!-- ONGLETS -->
-  <div class="tabs-nav">
-    <button class="active" onclick="setTab(this,'desc')">Description</button>
-    <button onclick="setTab(this,'compo')">Composition &amp; entretien</button>
-  </div>
+  <div data-controller="navigation">
+    <div class="tabs-nav" data-navigation-target="btnPanel">
+      <button class="active" data-navigation-id-param="tabDesc"  data-action="click->navigation#setTab">Description</button>
+      <button data-navigation-id-param="tabCompo" data-action="click->navigation#setTab">Composition &amp; entretien</button>
+    </div>
 
-  <div class="tab-panel active" id="tab-desc">
-    <p>{{ products.description }}</p>
-    <p>Comptez 5 à 7 jours de confection avant expédition.</p>
-  </div>
+    <div class="tab-panel active" id="tabDesc" data-navigation-target="tabPanel">
+      <p>{{ products.description }}</p>
+      <p>Comptez 5 à 7 jours de confection avant expédition.</p>
+    </div>
 
-  <div class="tab-panel" id="tab-compo">
-    <ul>
-      <li>100% lin lavé, origine France</li>
-      <li>Doublure en coton bio</li>
-      <li>Lavage à 30°C, cycle délicat</li>
-      <li>Repassage à température moyenne, envers du tissu</li>
-      <li>Ne pas mettre au sèche-linge</li>
-    </ul>
-  </div>
+    <div class="tab-panel" id="tabCompo" data-navigation-target="tabPanel">
+      <ul>
+        <li>100% lin lavé, origine France</li>
+        <li>Doublure en coton bio</li>
+        <li>Lavage à 30°C, cycle délicat</li>
+        <li>Repassage à température moyenne, envers du tissu</li>
+        <li>Ne pas mettre au sèche-linge</li>
+      </ul>
+    </div>
 
+  </div>
+  
   <!-- CRÉATRICE -->
   <div class="creator-spotlight">
     <span class="avatar-lg">FL</span>
@@ -103,7 +106,7 @@
       <h3>Atelier Fleur de Lin</h3>
       <p>Couturière installée à Rennes depuis 2018, spécialisée dans les vêtements en lin français. Plus de 600 pièces cousues à la main pour ses clientes.</p>
     </div>
-    <a href="#" class="btn-outline-b">Voir la boutique</a>
+    <a href="#" class="btn-outline-b">Voir le profil</a>
   </div>
 
   {# <!-- VOUS AIMEREZ AUSSI -->
@@ -183,13 +186,6 @@
     const main = document.getElementById('galleryMain');
     main.classList.remove('p-bleu','p-rouge','p-sable','p-dore','p-bleudark');
     main.classList.add(el.dataset.color);
-  }
-
-  function setTab(btn, id){
-    document.querySelectorAll('.tabs-nav button').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + id).classList.add('active');
   }
 
   document.querySelectorAll('.size-pill').forEach(p => {

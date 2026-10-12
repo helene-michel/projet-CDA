@@ -1,0 +1,102 @@
+{% extends 'admin/adminbase.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+
+	<div class="main-area">
+
+		<header class="topbar">
+			<div class="crumb">Plateforme / <span>Utilisateurs</span></div>
+			<div class="topbar-actions">
+				<button class="notif-btn" aria-label="Notifications">
+					<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+					<span class="notif-dot"></span>
+				</button>
+				<div class="admin-chip">
+					<span class="avatar-sm">AB</span>
+					<span>
+						<span class="name">{{ app.user.prenom }}  {{ app.user.nom }}</span>
+						{# <span class="role">{{ app.user.roles }}</span> #}
+					</span>
+				</div>
+			</div>
+		</header>
+
+		<div class="content">
+			<div class="page-title">
+				<h1>Utilisateurs</h1>
+				<p>Retrouvez toutes les vendeuses et clientes inscrites. Gérez leur statut et accédez au détail de chaque profil.</p>
+			</div>
+
+			<!-- BARRE D'OUTILS -->
+			<div class="users-toolbar">
+				<div class="users-search">
+					<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8A8578" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+					<input type="text" placeholder="Rechercher par nom ou email…">
+				</div>
+				<div class="filter-tabs">
+					<a href="{{ path('admin_app_user_index') }}" class="{{ not app.request.query.get('role') ? 'active' : '' }}">Tous ({{ rolesCount["ROLE_USER"] }})</a>
+					<a href="{{ path('admin_app_user_index', {'role': 'ROLE_SELLER'}) }}" class="{{ app.request.query.get('role') === 'ROLE_SELLER' ? 'active' : '' }}">Vendeur/ses ({{ rolesCount["ROLE_SELLER"] }})</a>
+					<a href="{{ path('admin_app_user_index', {'role': 'ROLE_ADMIN'}) }}" class="{{ app.request.query.get('role') === 'ROLE_ADMIN' ? 'active' : '' }}">Administrateur ({{ rolesCount["ROLE_ADMIN"] }})</a>
+				</div>
+			</div>
+
+			<p class="results-count">Compte trouvé : {{ users.getTotalItemCount }}</p>
+
+			<!-- TABLE -->
+			<div class="users-table-wrap">
+				<table class="users-table">
+					<thead>
+						<tr>
+							<th>Nom</th>
+							<th>Prénom</th>
+							<th>email</th>
+							<th>Rôle</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+            
+        
+						{% for user in users %}
+							<tr>
+								<td>
+									<div class="user-cell">
+										<div class="meta">
+											<div class="uname">{{ user.nom }}</div>
+										</div>
+									</div>
+								</td>
+								<td><div class="uname">{{ user.prenom }}</div></td>
+								<td>              
+									{% for role in user.roles %}
+										<span class="pill pill-{{ role }}"></span>
+									{% endfor %}
+              
+								</td>
+								<td><div class="uemail">{{ user.email }}</div></td>
+								<td>
+									<div class="row-actions">
+										<a href="{{ path('admin_app_user_show', {'id': user.id}) }}">{{ ux_icon('lucide:eye') }}</a>
+										<a href="{{ path('admin_app_user_edit', {'id': user.id}) }}">{{ ux_icon('lucide:pencil') }}</a>
+										<button aria-label="Voir le profil"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+										<button class="suspend" aria-label="Suspendre"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 8l8 8"/></svg></button>
+									</div>
+								</td>
+							</tr>
+						{% else %}
+							<tr>
+								<td colspan="5">no records found</td>
+							</tr>
+              
+						{% endfor %}
+					</tbody>
+				</table>
+				<div class="navigation">
+					{{ knp_pagination_render(users) }}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

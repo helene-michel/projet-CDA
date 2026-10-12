@@ -1,0 +1,47 @@
+{#
+    Template de pagination KnpPaginatorBundle
+    reprenant le style .pagination-b de Bobine.
+
+    Variables fournies par le bundle :
+    pageCount, current, pagesInRange, startPage, endPage,
+    route, query, pageParameterName
+#}
+{% if pageCount > 1 %}
+<nav class="pagination-b" aria-label="Pagination">
+
+    {% if current > 1 %}
+        <a href="{{ path(route, query|merge({(pageParameterName): current - 1})) }}" rel="prev" aria-label="Page précédente">‹</a>
+    {% else %}
+        <span class="disabled" aria-hidden="true">‹</span>
+    {% endif %}
+
+    {% if startPage > 1 %}
+        <a href="{{ path(route, query|merge({(pageParameterName): 1})) }}">1</a>
+        {% if startPage > 2 %}
+            <span class="dots" aria-hidden="true">…</span>
+        {% endif %}
+    {% endif %}
+
+    {% for page in pagesInRange %}
+        {% if page != current %}
+            <a href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+        {% else %}
+            <span class="active" aria-current="page">{{ page }}</span>
+        {% endif %}
+    {% endfor %}
+
+    {% if endPage < pageCount %}
+        {% if endPage < pageCount - 1 %}
+            <span class="dots" aria-hidden="true">…</span>
+        {% endif %}
+        <a href="{{ path(route, query|merge({(pageParameterName): pageCount})) }}">{{ pageCount }}</a>
+    {% endif %}
+
+    {% if current < pageCount %}
+        <a href="{{ path(route, query|merge({(pageParameterName): current + 1})) }}" rel="next" aria-label="Page suivante">›</a>
+    {% else %}
+        <span class="disabled" aria-hidden="true">›</span>
+    {% endif %}
+
+</nav>
+{% endif %}

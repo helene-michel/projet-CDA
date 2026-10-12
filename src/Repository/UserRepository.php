@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -33,8 +34,37 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    
+    public function allUserQuery(?array $roles=[]):Query {
+        $q = $this->createQueryBuilder('u');
 
+        if($roles){
+            foreach($roles as $role){
+                $q
+                ->andWhere('u.roles LIKE :role')
+                ->setParameter('role', '%"' . $role . '"%')
+                ;
+            }
+            
+        }
+        $q
+        ->orderBy('u.id', 'ASC');
+        return $q->getQuery()
+            ;
+        
+    }
+   public function countGroupedByRole(array $rolesToCount): array
+    {
+        $counts = [];
+        foreach ($rolesToCount as $role) {
+            $counts[$role] = (int) $this->createQueryBuilder('u')
+                ->select('COUNT(u.id)')
+                ->andWhere('u.roles LIKE :role')
+                ->setParameter('role', '%"' . $role . '"%')
+                ->getQuery()
+                ->getSingleScalarResult();
+        }
+        return $counts;
+    }
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

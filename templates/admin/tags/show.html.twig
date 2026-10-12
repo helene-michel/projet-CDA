@@ -20,7 +20,7 @@
 
     <a href="{{ path('admin_app_tags_index') }}">back to list</a>
 
-    <a href="{{ path('admin_app_tags_edit', {'id': tag.id}) }}">edit</a>
+    <a href="{{ path('admin_app_tags_edit', {'id': tag.id}) }}">{{ ux_icon('lucide:pencil') }}</a>
 
     {{ include('admin/tags/_delete_form.html.twig') }}
 {% endblock %}

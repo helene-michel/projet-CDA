@@ -17,7 +17,7 @@ final class TagsController extends AbstractController
     #[Route(name: 'app_tags_index', methods: ['GET'])]
     public function index(TagsRepository $tagsRepository): Response
     {
-        return $this->render('admin/tags/list.html.twig', [
+        return $this->render('admin/tags/index.html.twig', [
             'tags' => $tagsRepository->findAll(),
         ]);
     }

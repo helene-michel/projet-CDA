@@ -17,7 +17,7 @@ final class CategoryController extends AbstractController
     #[Route(name: 'app_category_index', methods: ['GET'])]
     public function index(CategoryRepository $categoryRepository): Response
     {
-        return $this->render('admin/category/list.html.twig', [
+        return $this->render('admin/category/index.html.twig', [
             'categories' => $categoryRepository->findAll(),
         ]);
     }
@@ -61,7 +61,7 @@ final class CategoryController extends AbstractController
 
             return $this->redirectToRoute('admin_app_category_index', [], Response::HTTP_SEE_OTHER);
         }
-
+        
         return $this->render('admin/category/edit.html.twig', [
             'category' => $category,
             'form' => $form,

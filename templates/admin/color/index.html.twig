@@ -1,0 +1,70 @@
+{% extends 'admin/adminbase.html.twig' %}
+
+{% block title %}Hello DashboardAdminController!{% endblock %}
+
+{% block body %}
+
+	<div class="main-area">
+
+		<header class="topbar">
+			<div class="crumb">Paramètres plateforme / <span>Couleurs &amp; options</span></div>
+			<div class="topbar-actions">
+        
+			</div>
+		</header>
+
+		<div class="content">
+			<div class="page-title">
+				<h1>Couleurs &amp; options</h1>
+				<p>Définissez la palette de couleurs disponible pour toute la marketplace. Les vendeuses choisissent parmi ces coloris lorsqu'elles publient une création.</p>
+			</div>
+
+			<!-- AJOUT D'UNE COULEUR -->
+			<div class="color-add-card">
+				<h2>Ajouter une couleur</h2>
+				{{ form_start(form, {'attr': {'class': 'color-add-row'}}) }}
+				<div class="field">
+					{{ form_label(form.nom) }}
+					<div>
+						{{ form_widget(form.nom) }}
+					</div>
+				</div>
+				<div class="field">
+					{{ form_label(form.code) }}
+					<div class="color-picker-wrap">
+						{{ form_widget(form.code) }}
+					</div>
+				</div>
+				<button type="submit" class="btn-add-color">{{ boutonText }} la couleur</button>
+				{{ form_end(form) }}
+			</div>
+        
+
+			<!-- LISTE DES COULEURS -->
+			<div class="section-label">Coloris de la marketplace</div>
+			<div class="color-list" id="colorList">
+				{% for color in colorList %}
+					<div class="color-item">
+						<span class="color-swatch" style="background:{{ color.code }}"></span>
+						<div class="meta">
+							<input class="name" value="{{ color.nom }}" aria-label="Nom de la couleur">
+						</div>
+						<div class="actions">
+							<form action="{{ path('app_color_delete_admin') }}" method="POST" onsubmit="return confirm('Voulez vous vraiment supprimer la couleur {{ color.nom }}');">
+								<button type='submit' class="delete" aria-label="Supprimer">{{ ux_icon('lucide:trash') }}</button>
+								<input type="hidden" value="{{ csrf_token('color_delete_' ~ color.id) }}" name="_token">
+								<input type="hidden" value="DELETE" name="_method">
+								<input type="hidden" value="{{ color.id }}" name="colorId">
+							</form>  
+							<a href="{{ path('app_color_admin', {id: color.id}) }}">{{ ux_icon('lucide:pencil') }}</a>  
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	{% include 'base/partials/alert.html.twig' %}
+
+    
+	{# <a href="{{ path('app_color_admin') }}">Retour au dashboard</a> #}
+{% endblock %}

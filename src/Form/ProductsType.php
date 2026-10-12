@@ -2,8 +2,12 @@
 
 namespace App\Form;
 
+use App\Entity\Color;
 use App\Entity\Products;
+use App\Repository\ColorRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,6 +22,16 @@ class ProductsType extends AbstractType
         ->add('nom')
         ->add('prix_ht')
         ->add('TVA')
+        ->add('colors', EntityType::class, [
+            'class' => Color::class,
+            'choice_label' => 'nom',
+            'multiple' => true,
+            'expanded' => true,
+            'choice_attr' => fn(Color $color) => [
+                'data-code' => $color->getCode(),
+                'data-nom' => $color->getNom(),
+            ]
+        ])
         ->add('description', TextareaType::class, [
             'label' => 'Description'
         ])

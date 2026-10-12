@@ -20,8 +20,7 @@
     class="container-xxl pb-5"
     data-controller="filter" 
     data-filter-route-value="{{ absolute_url(path('app_articles_load', {id:category.id})) }}" 
-    data-filter-min-value="0" 
-    data-filter-max-value="400" 
+    data-filter-max-value="{{ productMax }}"
     data-filter-csrf-value="{{ csrf_token('products_load') }}"
 >
     <div class="row g-4">
@@ -32,8 +31,8 @@
                 <h2>Filtrer</h2>
                 <div class="filter-group">
                     <h3>Prix</h3>
-                    <input type="range" min="0" max="400" step="10" class="form-range" data-action="input->filter#priceFilter">
-                    <div class="price-values"><span>0 €</span><span>400 €</span></div>
+                    <input type="range" min="0" max="{{ productMax }}" value="{{ productMax }}" class="form-range" data-filter-target="choicePrice" data-action="mouseup->filter#priceFilter keyup->filter#priceFilter">
+                    <div class="price-values"><span>0 €</span><span>{{ productMax }} €</span></div>
                 </div>
 
                 <div class="filter-group">
@@ -65,10 +64,9 @@
             <div class="toolbar">
                 <span style="font-size:.88rem; color:#5B6472;">0 résultats</span>
                 <div class="d-flex align-items-center gap-3">
-                    <select>
-                        <option>Prix croissant</option>
-                        <option>Prix décroissant</option>
-                        <option>Nouveautés</option>
+                    <select data-action="filter#orderPrice">
+                        <option value="ASC">Prix croissant</option>
+                        <option value="DESC">Prix décroissant</option>
                     </select>
                 </div>
             </div>

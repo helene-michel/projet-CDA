@@ -8,13 +8,14 @@ export default class extends Controller {
         min: Number,
         max: Number,
     }
-    static targets = ["matiereList", "matiereToggle", "skeleton", "results"]
+    static targets = ["matiereList", "matiereToggle", "skeleton", "results", "choicePrice"]
 
     connect() {
         // On relit l'URL pour restaurer les filtres (rafraîchissement, lien partagé)
         this.tags = new Set(new URLSearchParams(window.location.search).getAll('tags[]'));
+        this.price = new URLSearchParams(window.location.search).get('prix') ?? this.maxValue;
         this.abortController = null;
-
+         this.choicePriceTarget.value = this.price;
         this.syncCheckboxes();
         this.getProducts();
     }
@@ -38,13 +39,24 @@ export default class extends Controller {
         this.updateBrowserUrl();
         this.getProducts();
     }
+    // ---------- Prix ----------
 
+    priceFilter(event) {
+        const elm = event.target;
+
+        const price = elm.value;
+        this.price=price;
+        this.updateBrowserUrl();
+        this.getProducts();
+    }
     // Reconstruit les paramètres à partir de l'URL actuelle (les autres paramètres
     // éventuels comme le prix ou le tri sont conservés) et remplace uniquement les tags.
     buildParams() {
         const params = new URLSearchParams(window.location.search);
         params.delete('tags[]');
+        params.delete('prix');
         this.tags.forEach(id => params.append('tags[]', id));
+        params.append('prix',this.price);
         return params;
     }
 
@@ -76,7 +88,7 @@ export default class extends Controller {
         this.skeletonTarget.classList.remove('d-none');
         this.resultsTarget.classList.add('d-none');
 
-        const url = new URL(this.routeValue, window.location.origin);
+        const url = new URL(this.routeValue);
         url.search = this.buildParams().toString();
 
         try {
@@ -157,11 +169,11 @@ export default class extends Controller {
             item.style.display = (!query || label.includes(query)) ? 'block' : 'none';
         });
     }
-
-    // ---------- Prix ----------
-
-    priceFilter(event) {
-        const elm = event.target;
-        // À implémenter
+        // ---------- Ordre des prix ----------
+    orderPrice(event){
+         const elm = event.target;
+         console.log(elm.value);
     }
+
+    
 }

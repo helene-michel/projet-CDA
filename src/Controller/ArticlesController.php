@@ -21,10 +21,11 @@ final class ArticlesController extends AbstractController
     ): Response
     {
         $tags = $entityManager->getRepository(Tags::class)->findAll();
-       
+        $productMax = $entityManager->getRepository(Products::class)->priceMax($category);
         return $this->render('articles/list.html.twig', [
            'category'=>$category,
-           'tags'=>$tags
+           'tags'=>$tags,
+           'productMax'=>$productMax
         ]);
     }
     #[Route('/articles/{id}/load', name: 'app_articles_load', options:['expose'=>true])]
@@ -34,13 +35,14 @@ final class ArticlesController extends AbstractController
         Request $request
     ){
    
-         if($request->query->all('tags')){
-            $products = $entityManager->getRepository(Products::class)->getByCategoryAndTags($category->getId(), $request->query->all('tags'));
-            
-        } else {
-            $products = $entityManager->getRepository(Products::class)->getByCategoryAndTags($category->getId());
-        }
-        
+         
+        $products = $entityManager->getRepository(Products::class)->getByCategoryAndTags(
+            $category->getId(),
+            $request->query->all('tags'),
+            $request->query->get('prix'),
+            $request->query->get('prixOrder'),
+        );
+                 
         return $this->json($products, 200);
 
 

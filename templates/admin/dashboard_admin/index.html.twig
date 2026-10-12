@@ -1,7 +1,233 @@
 {% extends 'admin/adminbase.html.twig' %}
 
-{% block title %}Hello DashboardAdminController!{% endblock %}
+{% block title %}Tableau de bord — Admin Bobine{% endblock %}
 
 {% block body %}
+
+    <div class="main-area">
+        <div class="content">
+
+            <div class="page-title">
+                <h1>Tableau de bord</h1>
+                <p>Vue d'ensemble de l'activité de la marketplace.</p>
+            </div>
+
+            {# ===================== CHIFFRES CLÉS ===================== #}
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-label">Utilisateurs</span>
+                        <span class="stat-icon" style="background:var(--bleu-atelier)">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c1.3-3.2 4.3-5 6-5s4.7 1.8 6 5"/><circle cx="17.5" cy="9" r="2.3"/><path d="M15.5 13c2 0 4.8 1.4 6 4.3"/></svg>
+                        </span>
+                    </div>
+                    <div class="stat-value">{{ userCount|default(0)|number_format(0, ',', ' ') }}</div>
+                    <div class="stat-sub">+{{ newUsersWeek|default(0) }} cette semaine</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-label">Articles</span>
+                        <span class="stat-icon" style="background:var(--rouge-fil)">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 3l4 3 4-3 2 4-3 2v12H9V9L6 7z"/></svg>
+                        </span>
+                    </div>
+                    <div class="stat-value">{{ articleCount|default(0)|number_format(0, ',', ' ') }}</div>
+                    <div class="stat-sub">{{ articlesOnline|default(0) }} en ligne</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-label">Commandes du mois</span>
+                        <span class="stat-icon" style="background:var(--dore)">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 7Z"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
+                        </span>
+                    </div>
+                    <div class="stat-value">{{ ordersMonth|default(0)|number_format(0, ',', ' ') }}</div>
+                    <div class="stat-sub">{{ ordersToday|default(0) }} aujourd'hui</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span class="stat-label">Chiffre d'affaires</span>
+                        <span class="stat-icon" style="background:var(--encre)">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 6.5A6 6 0 1 0 17 17.5"/><path d="M4 10h9M4 14h9"/></svg>
+                        </span>
+                    </div>
+                    <div class="stat-value">{{ revenueMonth|default(0)|number_format(0, ',', ' ') }} €</div>
+                    <div class="stat-sub">ce mois-ci</div>
+                </div>
+
+            </div>
+
+            {# ===================== PETITES STATS ===================== #}
+            <div class="stats-grid stats-grid-sm">
+
+                <div class="stat-card stat-card-sm">
+                    <div class="stat-label">Panier moyen</div>
+                    <div class="stat-value">{{ averageBasket|default(0)|number_format(2, ',', ' ') }} €</div>
+                </div>
+
+                <div class="stat-card stat-card-sm">
+                    <div class="stat-label">Vendeuses actives</div>
+                    <div class="stat-value">{{ activeSellers|default(0) }}</div>
+                </div>
+
+                <div class="stat-card stat-card-sm">
+                    <div class="stat-label">Note moyenne</div>
+                    <div class="stat-value">{{ averageRating|default(0)|number_format(1, ',', ' ') }} / 5</div>
+                </div>
+
+                <div class="stat-card stat-card-sm">
+                    <div class="stat-label">Inscriptions (7 j)</div>
+                    <div class="stat-value">{{ newUsersWeek|default(0) }}</div>
+                </div>
+
+            </div>
+
+            {# ===================== GRAPHIQUE + À TRAITER ===================== #}
+            <div class="dash-grid">
+
+                <div class="dash-card">
+                    <div class="dash-card-head">
+                        <h2>Ventes par jour</h2>
+                        <div class="filter-tabs" id="salesPeriod">
+                            <button type="button" class="active" data-period="7">7 jours</button>
+                            <button type="button" data-period="30">30 jours</button>
+                            <button type="button" data-period="90">90 jours</button>
+                        </div>
+                    </div>
+
+                    <div
+                        class="chart-box"
+                        id="salesChartBox"
+                        data-labels="{{ salesLabels|default([])|json_encode|e('html_attr') }}"
+                        data-values="{{ salesValues|default([])|json_encode|e('html_attr') }}"
+                    >
+
+                        {# Spinner affiché tant que Chart.js n'est pas chargé #}
+                        <div class="chart-loader" id="salesChartLoader" role="status">
+                            <span class="spinner-bobine" aria-hidden="true"></span>
+                            <span>Chargement du graphique…</span>
+                        </div>
+
+                        <canvas id="salesChart" hidden></canvas>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <div class="dash-card-head">
+                        <h2>À traiter</h2>
+                    </div>
+                    <ul class="todo-list">
+                        <li>
+                            {# Remplacez les # par vos routes #}
+                            <a href="#">
+                                Vendeuses en attente de validation
+                                <span class="todo-count {{ pendingSellers|default(0) > 0 ? 'alert' : '' }}">{{ pendingSellers|default(0) }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                Avis à modérer
+                                <span class="todo-count {{ reviewsToModerate|default(0) > 0 ? 'alert' : '' }}">{{ reviewsToModerate|default(0) }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                Commandes à expédier
+                                <span class="todo-count">{{ ordersToShip|default(0) }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            {# ===================== DERNIÈRES INSCRIPTIONS ===================== #}
+            <div class="dash-card">
+                <div class="dash-card-head">
+                    <h2>Dernières inscriptions</h2>
+                </div>
+                <ul class="recent-list">
+                    {% for user in latestUsers|default([]) %}
+                        <li class="recent-item">
+                            <div class="user-cell">
+                                <span class="avatar-sm">{{ user.email|slice(0, 2)|upper }}</span>
+                                <div class="meta">
+                                    <div class="uname">{{ user.email }}</div>
+                                    <div class="uemail">{{ user.createdAt ? user.createdAt|date('d/m/Y') : '' }}</div>
+                                </div>
+                            </div>
+                            {% if 'ROLE_VENDEUSE' in user.roles %}
+                                <span class="pill pill-vendeuse">Vendeuse</span>
+                            {% else %}
+                                <span class="pill pill-cliente">Cliente</span>
+                            {% endif %}
+                        </li>
+                    {% else %}
+                        <li class="empty-note">Aucune inscription récente.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+        </div>{# fin .content #}
+    </div>{# fin .main-area #}
+
+    <script>
+        (function () {
+            // Bascule visuelle des périodes (le rechargement des données se branchera plus tard)
+            document.querySelectorAll("#salesPeriod button").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    document
+                        .querySelectorAll("#salesPeriod button")
+                        .forEach(function (b) {
+                            b.classList.remove("active");
+                        });
+                    btn.classList.add("active");
+                });
+            });
+
+            var box = document.getElementById("salesChartBox");
+            var canvas = document.getElementById("salesChart");
+            var loader = document.getElementById("salesChartLoader");
+
+            // Chart.js n'est pas encore installé : le spinner reste affiché.
+            if (typeof Chart === "undefined") {
+                return;
+            }
+
+            var labels = JSON.parse(box.dataset.labels);
+            var values = JSON.parse(box.dataset.values);
+
+            new Chart(canvas, {
+                type: "line",
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Ventes (€)",
+                            data: values,
+                            borderColor: "#33507A",
+                            backgroundColor: "rgba(51, 80, 122, .12)",
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 3,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } },
+                },
+            });
+
+            loader.hidden = true;
+            canvas.hidden = false;
+        })();
+    </script>
 
 {% endblock %}

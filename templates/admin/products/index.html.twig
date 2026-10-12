@@ -23,8 +23,8 @@
                 <td>{{ product.prixHt }}</td>
                 <td>{{ product.TVA }}</td>
                 <td>
-                    <a href="{{ path('admin_app_products_show', {'id': product.id}) }}">show</a>
-                    <a href="{{ path('admin_app_products_edit', {'id': product.id}) }}">edit</a>
+                    <a href="{{ path('admin_app_products_show', {'id': product.id}) }}">{{ ux_icon('lucide:eye') }}</a>
+                    <a href="{{ path('admin_app_products_edit', {'id': product.id}) }}">{{ ux_icon('lucide:pencil') }}</a>
                 </td>
             </tr>
         {% else %}

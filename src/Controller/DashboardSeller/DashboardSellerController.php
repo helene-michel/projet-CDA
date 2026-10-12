@@ -11,7 +11,7 @@ class DashboardSellerController extends AbstractController
     #[Route('/', name: 'app_dashboard_seller_dashboard_seller')]
     public function index(): Response
     {
-        return $this->render('dashboard_seller/dashboard_seller/list.html.twig', [
+        return $this->render('seller/dashboard/index.html.twig', [
             'controller_name' => 'DashboardSeller/DashboardSellerController',
         ]);
     }

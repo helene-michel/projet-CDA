@@ -14,6 +14,8 @@ use Symfony\Component\Serializer\Attribute\Ignore;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    const ROLES = ["ROLE_USER", "ROLE_SELLER", "ROLE_ADMIN"];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -28,8 +30,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $SIRET = null;
 
     /**
      * @var list<string> The user roles
@@ -57,6 +57,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Products::class, mappedBy: 'user', cascade:['persist', 'remove'])]
     private Collection $products;
+
+    #[ORM\OneToOne(mappedBy: 'User',  cascade: ['persist', 'remove'])]
+    private ?Seller $seller = null;
 
     public function __construct()
     {
@@ -107,18 +110,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    public function getSIRET(): ?string
-    {
-        return $this->SIRET;
-    }
-
-    public function setSIRET(string $SIRET): static
-    {
-        $this->SIRET = $SIRET;
-
-        return $this;
-    }
-
+   
     /**
      * A visual identifier that represents this user.
      *
@@ -134,11 +126,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+        return array_unique($this->roles);
     }
 
     /**
@@ -246,6 +234,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $product->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSeller(): ?Seller
+    {
+        return $this->seller;
+    }
+
+    public function setSeller(?Seller $seller): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($seller === null && $this->seller !== null) {
+            $this->seller->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($seller !== null && $seller->getUser() !== $this) {
+            $seller->setUser($this);
+        }
+
+        $this->seller = $seller;
 
         return $this;
     }

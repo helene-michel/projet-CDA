@@ -44,6 +44,7 @@ class RegisterController extends AbstractController{
             $passwordHash = $uphi->hashPassword($user, $user->getPassword());
 
             $user->setPassword($passwordHash);
+            $user->setRoles(['ROLE_USER']);
             $em->persist($user);
             $em->flush();
 
