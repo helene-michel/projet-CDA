@@ -15,7 +15,8 @@ export default class extends Controller {
         this.tags = new Set(new URLSearchParams(window.location.search).getAll('tags[]'));
         this.price = new URLSearchParams(window.location.search).get('prix') ?? this.maxValue;
         this.abortController = null;
-         this.choicePriceTarget.value = this.price;
+        this.choicePriceTarget.value = this.price;
+        this.orderValue = new URLSearchParams(window.location.search).get('tri') ?? '';
         this.syncCheckboxes();
         this.getProducts();
     }
@@ -55,8 +56,10 @@ export default class extends Controller {
         const params = new URLSearchParams(window.location.search);
         params.delete('tags[]');
         params.delete('prix');
+        params.delete('tri');
         this.tags.forEach(id => params.append('tags[]', id));
         params.append('prix',this.price);
+        params.append('tri',this.orderValue);
         return params;
     }
 
@@ -171,8 +174,10 @@ export default class extends Controller {
     }
         // ---------- Ordre des prix ----------
     orderPrice(event){
-         const elm = event.target;
-         console.log(elm.value);
+        const elm = event.target;
+        this.orderValue = elm.value;
+        this.updateBrowserUrl();
+        this.getProducts();
     }
 
     

@@ -40,7 +40,7 @@ final class ArticlesController extends AbstractController
             $category->getId(),
             $request->query->all('tags'),
             $request->query->get('prix'),
-            $request->query->get('prixOrder'),
+            $request->query->get('tri'),
         );
                  
         return $this->json($products, 200);

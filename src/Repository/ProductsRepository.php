@@ -45,7 +45,7 @@ class ProductsRepository extends ServiceEntityRepository
                 ->setParameter('price', $price)
             ;
         }
-        if($priceOrder){
+        if($priceOrder && $priceOrder!=''){
             $q
                 ->orderBy('p.prix_ht', $priceOrder)
             ;

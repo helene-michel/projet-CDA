@@ -563,7 +563,10 @@
   width:44px; height:44px; border-radius:50%; border:1px solid var(--sable); background:#fff;
   display:flex; align-items:center; justify-content:center; font-size:.85rem; cursor:pointer; transition:all .15s ease;
 }
-.size-pill.active, .size-pill:hover{ background:var(--encre); color:#fff; border-color:var(--encre); }
+.size-pill.active, .size-pill:hover, .size-pill:has(input:checked){ background:var(--encre); color:#fff; border-color:var(--encre); }
+.color-dot:has(input:checked), .color-doc:hover {
+  border:2px solid var(--encre);
+}
  
 .color-group{ display:flex; gap:.7rem; margin-bottom:1.6rem; }
 .color-dot{
@@ -921,5 +924,42 @@ table.users-table{ width:100%; border-collapse:collapse; min-width:720px; }
   background: var(--bleu-atelier);
 }
 
+/*FORMULAIRE*/
 
- 
+input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+/* focus clavier visible sur le label */
+input[type="radio"]:focus-visible + span {
+  outline: 2px solid currentColor;
+}
+
+.qty-stepper {
+  border: 1px solid var(--encre);
+}
+
+.qty-stepper > span {
+  cursor: pointer;
+}
+
+.qty-stepper > input {
+  width: 4rem;
+  text-align: center;
+  
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
+}

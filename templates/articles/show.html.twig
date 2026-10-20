@@ -4,112 +4,128 @@
 
 {% block body %}
 
-<!-- ===================== FIL D'ARIANE ===================== -->
-<div class="container-xxl">
-  <div class="breadcrumb-simple"><a href="#">Accueil</a> / <a href="#">Vêtements sur-mesure</a> / <a href="#">Robes</a> / <span>Robe en lin Camille</span></div>
-</div>
+	<!-- ===================== FIL D'ARIANE ===================== -->
+	<div class="container-xxl">
+		<div class="breadcrumb-simple"><a href="#">Accueil</a> / <a href="#">Vêtements sur-mesure</a> / <a href="#">Robes</a> / <span>Robe en lin Camille</span></div>
+	</div>
 
-<!-- ===================== PRODUIT ===================== -->
-<section class="container-xxl py-4">
-  <div class="row g-5">
+	<!-- ===================== PRODUIT ===================== -->
+	<section class="container-xxl py-4">
+		<div class="row g-5">
 
-    <!-- GALERIE -->
-    <div class="col-lg-6">
-      <div class="gallery-main p-bleu weave" id="galleryMain">
-        <span class="badge-fait-main">Fait main</span>
-      </div>
-      <div class="gallery-thumbs">
-        <div class="thumb active p-bleu weave" data-color="p-bleu" onclick="setGallery(this)"></div>
-        <div class="thumb p-rouge weave" data-color="p-rouge" onclick="setGallery(this)"></div>
-        <div class="thumb p-sable weave" data-color="p-sable" onclick="setGallery(this)"></div>
-        <div class="thumb p-dore weave" data-color="p-dore" onclick="setGallery(this)"></div>
-      </div>
-    </div>
+			<!-- GALERIE -->
+			<div class="col-lg-6">
+				<div class="gallery-main p-bleu weave" id="galleryMain">
+					<span class="badge-fait-main">Fait main</span>
+				</div>
+				<div class="gallery-thumbs">
+					<div class="thumb active p-bleu weave" data-color="p-bleu" onclick="setGallery(this)"></div>
+					<div class="thumb p-rouge weave" data-color="p-rouge" onclick="setGallery(this)"></div>
+					<div class="thumb p-sable weave" data-color="p-sable" onclick="setGallery(this)"></div>
+					<div class="thumb p-dore weave" data-color="p-dore" onclick="setGallery(this)"></div>
+				</div>
+			</div>
 
-    <!-- INFOS -->
-    <div class="col-lg-6">
-        <div>
-            <h1 class="product-title-lg">{{ products.nom }}</h1>
+			<!-- INFOS -->
+			<div class="col-lg-6">
+				<div>
+					<h1 class="product-title-lg">{{ products.nom }}</h1>
             
-            <div class="creator-line">
-                <span class="avatar-sm">FL</span><!--ajouter avatar du seller plutot que les initiales-->
-                    <a href="#">{{ products.User.nom }} {{ products.User.prenom }}</a>
-            </div>
-        </div>
-        <div class="price-big serif">{{ products.prixht }} €</div>
+					<div class="creator-line">
+						<span class="avatar-sm">FL</span><!--ajouter avatar du seller plutot que les initiales-->
+						<a href="#">{{ products.User.nom }} {{ products.User.prenom }}</a>
+					</div>
+				</div>
+				<div class="price-big serif">{{ products.prixht }} €</div>
 
-        <p style="color:#4B5563; max-width:48ch; margin-bottom:1.6rem;">{{ products.description }}</p>      
-      <div class="option-label">Taille</div>
-      <div class="size-group">
-        <div class="size-pill">XS</div>
-        <div class="size-pill active">S</div>
-        <div class="size-pill">M</div>
-        <div class="size-pill">L</div>
-        <div class="size-pill">XL</div>
-      </div>
+				<p style="color:#4B5563; max-width:48ch; margin-bottom:1.6rem;">{{ products.description }}</p>
+				<form action="{{ path('app_cart_add') }}" method="post" data-controller="product">
+					<div class="option-label">Taille</div>
+					<div class="size-group" >
+					{% for taille in ["xs", "s", "m", "l", "xl"] %}
+						<label class="size-pill" for="{{ taille }}">
+							<input
+								id="{{ taille }}"
+								name="taille"
+								type="radio"
+								value="{{ taille }}"
+								required
+							>
+							{{ taille|upper }}
+						</label>
+					{% endfor %}
+						
+					</div>
 
-      <div class="option-label">Coloris</div>
-      <div class="color-group">
-        <div class="color-dot active" style="background:var(--bleu-atelier-dark)"></div>
-        <div class="color-dot" style="background:var(--sable)"></div>
-        <div class="color-dot" style="background:var(--rouge-fil)"></div>
-      </div>
+					<div class="option-label">Coloris</div>
+					<div class="color-group">
+						{% for color in products.colors %}
+							<label class="color-dot" for="color-{{ color.id }}" style="background:{{ color.code }}">
+								<input type="radio" id="color-{{ color.id }}" name="color" value="{{ color.id }}" required >
+							</label>
+						{% endfor %}
+        
+					</div>
 
-      <div class="qty-row">
-        <div class="qty-stepper">
-          <button type="button" aria-label="Diminuer">−</button>
-          <span>1</span>
-          <button type="button" aria-label="Augmenter">+</button>
-        </div>
-      </div>
+					<div class="option-label">Quantité</div>
+					<div class="qty-row">
+						<div class="qty-stepper">
+							<span aria-label="Diminuer" data-action="click->product#less">−</span>
+							<input type="number" class="qty form-control" name="number" id="number" value="1" data-product-target="number">
+							<span aria-label="Augmenter" data-action="click->product#more">+</span>
+						</div>
+					</div>
 
-      <div class="action-row">
-        <button class="btn-primary-b btn-block">Ajouter au panier</button>
-      </div>
+					<div class="action-row">
+						<button type="submit" class="btn-primary-b btn-block" >Ajouter au panier</button>
+					</div>
+					<input type="hidden" value="{{ csrf_token('add_cart') }}" name="_token">
+				</form>
+      
 
-      <div class="mini-trust">
-        <div class="item"><span class="pastille" style="background:var(--bleu-atelier)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-7h6v7"/></svg></span>Cousue à la commande, expédiée sous 7 jours</div>
-        <div class="item"><span class="pastille" style="background:var(--rouge-fil)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="1"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>Paiement sécurisé</div>
-        <div class="item"><span class="pastille" style="background:var(--dore)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg></span>Cousue à Rennes par Atelier Fleur de Lin</div>
-      </div>
-    </div>
-  </div>
+				<div class="mini-trust">
+					<div class="item"><span class="pastille" style="background:var(--bleu-atelier)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-7h6v7"/></svg></span>Cousue à la commande, expédiée sous 7 jours</div>
+					<div class="item"><span class="pastille" style="background:var(--rouge-fil)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="1"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>Paiement sécurisé</div>
+					<div class="item"><span class="pastille" style="background:var(--dore)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg></span>Cousue à Rennes par Atelier Fleur de Lin</div>
+				</div>
+			</div>
+		</div>
 
-  <!-- ONGLETS -->
-  <div data-controller="navigation">
-    <div class="tabs-nav" data-navigation-target="btnPanel">
-      <button class="active" data-navigation-id-param="tabDesc"  data-action="click->navigation#setTab">Description</button>
-      <button data-navigation-id-param="tabCompo" data-action="click->navigation#setTab">Composition &amp; entretien</button>
-    </div>
+		<!-- ONGLETS -->
+		<div data-controller="navigation">
+			<div class="tabs-nav" data-navigation-target="btnPanel">
+				<button class="active" data-navigation-id-param="tabDesc" data-action="click->navigation#setTab">Description</button>
+				<button data-navigation-id-param="tabCompo" data-action="click->navigation#setTab">Composition &amp; entretien</button>
+			</div>
 
-    <div class="tab-panel active" id="tabDesc" data-navigation-target="tabPanel">
-      <p>{{ products.description }}</p>
-      <p>Comptez 5 à 7 jours de confection avant expédition.</p>
-    </div>
+			<div class="tab-panel active" id="tabDesc" data-navigation-target="tabPanel">
+				<p>{{ products.description }}</p>
+				<p>Comptez 5 à 7 jours de confection avant expédition.</p>
+			</div>
 
-    <div class="tab-panel" id="tabCompo" data-navigation-target="tabPanel">
-      <ul>
-        <li>100% lin lavé, origine France</li>
-        <li>Doublure en coton bio</li>
-        <li>Lavage à 30°C, cycle délicat</li>
-        <li>Repassage à température moyenne, envers du tissu</li>
-        <li>Ne pas mettre au sèche-linge</li>
-      </ul>
-    </div>
+			<div class="tab-panel" id="tabCompo" data-navigation-target="tabPanel">
+				<ul>
+					<li>100% lin lavé, origine France</li>
+					<li>Doublure en coton bio</li>
+					<li>Lavage à 30°C, cycle délicat</li>
+					<li>Repassage à température moyenne, envers du tissu</li>
+					<li>Ne pas mettre au sèche-linge</li>
+				</ul>
+			</div>
 
-  </div>
+		</div>
   
-  <!-- CRÉATRICE -->
-  <div class="creator-spotlight">
-    <span class="avatar-lg">FL</span>
-    <div>
-      <h3>Atelier Fleur de Lin</h3>
-      <p>Couturière installée à Rennes depuis 2018, spécialisée dans les vêtements en lin français. Plus de 600 pièces cousues à la main pour ses clientes.</p>
-    </div>
-    <a href="#" class="btn-outline-b">Voir le profil</a>
-  </div>
+		<!-- CRÉATRICE -->
+		<div class="creator-spotlight">
+			<span class="avatar-lg">FL</span>
+			<div>
+				<h3>Atelier Fleur de Lin</h3>
+				<p>Couturière installée à Rennes depuis 2018, spécialisée dans les vêtements en lin français. Plus de 600 pièces cousues à la main pour ses clientes.</p>
+			</div>
+			<a href="#" class="btn-outline-b">Voir le profil</a>
+		</div>
 
-  {# <!-- VOUS AIMEREZ AUSSI -->
+		{# <!-- VOUS AIMEREZ AUSSI -->
   <div class="section-head compact">
     <h2>Vous aimerez aussi</h2>
   </div>
@@ -157,57 +173,44 @@
   </div>
 </section> #}
 
-<!-- ===================== FOOTER ===================== -->
-<footer>
-  <div class="container-xxl">
-    <div class="row gy-4">
-      <div class="col-lg-4">
-        <div class="brand-mark mb-3">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="7"/><path d="M12 5c-2 2-2 12 0 14M12 5c2 2 2 12 0 14M5 12h14"/></svg>
-          Bobine
-        </div>
-        <p style="max-width:32ch;">Le marketplace de la couture française : tissus, patrons et créations cousus par des artisanes près de chez vous.</p>
-      </div>
-      <div class="col-6 col-lg-2"><h6>Acheter</h6><a href="#">Vêtements</a><a href="#">Tissus</a><a href="#">Patrons</a><a href="#">Cours</a></div>
-      <div class="col-6 col-lg-2"><h6>Vendre</h6><a href="#">Devenir créatrice</a><a href="#">Tarifs</a><a href="#">Guide de vente</a></div>
-      <div class="col-6 col-lg-2"><h6>Aide</h6><a href="#">Livraison</a><a href="#">Retours</a><a href="#">Contact</a></div>
-      <div class="col-6 col-lg-2"><h6>Bobine</h6><a href="#">À propos</a><a href="#">Mentions légales</a></div>
-    </div>
-    <div class="footer-bottom d-flex flex-wrap justify-content-between">
-      <span>© 2026 Bobine — tous droits réservés</span>
-      <span>Fait en France</span>
-    </div>
-  </div>
-</footer>
-<script>
-  function setGallery(el){
-    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    const main = document.getElementById('galleryMain');
-    main.classList.remove('p-bleu','p-rouge','p-sable','p-dore','p-bleudark');
-    main.classList.add(el.dataset.color);
-  }
-
-  document.querySelectorAll('.size-pill').forEach(p => {
-    p.addEventListener('click', () => {
-      document.querySelectorAll('.size-pill').forEach(s => s.classList.remove('active'));
-      p.classList.add('active');
-    });
-  });
-  document.querySelectorAll('.color-dot').forEach(d => {
-    d.addEventListener('click', () => {
-      document.querySelectorAll('.color-dot').forEach(c => c.classList.remove('active'));
-      d.classList.add('active');
-    });
-  });
-  document.querySelectorAll('.qty-stepper button').forEach((btn, i) => {
-    btn.addEventListener('click', () => {
-      const span = btn.parentElement.querySelector('span');
-      let val = parseInt(span.textContent);
-      val = i === 0 ? Math.max(1, val - 1) : val + 1;
-      span.textContent = val;
-    });
-  });
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+		<!-- ===================== FOOTER ===================== -->
+		<footer>
+			<div class="container-xxl">
+				<div class="row gy-4">
+					<div class="col-lg-4">
+						<div class="brand-mark mb-3">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="7"/><path d="M12 5c-2 2-2 12 0 14M12 5c2 2 2 12 0 14M5 12h14"/></svg>
+							Bobine
+						</div>
+						<p style="max-width:32ch;">Le marketplace de la couture française : tissus, patrons et créations cousus par des artisanes près de chez vous.</p>
+					</div>
+					<div class="col-6 col-lg-2"><h6>Acheter</h6><a href="#">Vêtements</a><a href="#">Tissus</a><a href="#">Patrons</a><a href="#">Cours</a></div>
+					<div class="col-6 col-lg-2"><h6>Vendre</h6><a href="#">Devenir créatrice</a><a href="#">Tarifs</a><a href="#">Guide de vente</a></div>
+					<div class="col-6 col-lg-2"><h6>Aide</h6><a href="#">Livraison</a><a href="#">Retours</a><a href="#">Contact</a></div>
+					<div class="col-6 col-lg-2"><h6>Bobine</h6><a href="#">À propos</a><a href="#">Mentions légales</a></div>
+				</div>
+				<div class="footer-bottom d-flex flex-wrap justify-content-between">
+					<span>© 2026 Bobine — tous droits réservés</span>
+					<span>Fait en France</span>
+				</div>
+			</div>
+		</footer>
+		<script>
+			function setGallery(el) {
+				document
+					.querySelectorAll(".thumb")
+					.forEach((t) => t.classList.remove("active"));
+				el.classList.add("active");
+				const main = document.getElementById("galleryMain");
+				main.classList.remove(
+					"p-bleu",
+					"p-rouge",
+					"p-sable",
+					"p-dore",
+					"p-bleudark",
+				);
+				main.classList.add(el.dataset.color);
+			}
+		</script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
