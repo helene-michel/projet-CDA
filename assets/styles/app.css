@@ -43,14 +43,14 @@
       repeating-linear-gradient(90deg, transparent 0 22px, var(--dore) 22px 30px, transparent 30px 46px);
     opacity:.7;
   }
-  .weave::before{
+  /* .weave::before{
     content:"";
-    position:absolute; inset:0;
+    position:absolute;
     background-image:
       repeating-linear-gradient(45deg, rgba(255,255,255,.08) 0 2px, transparent 2px 7px),
       repeating-linear-gradient(-45deg, rgba(0,0,0,.06) 0 2px, transparent 2px 7px);
     pointer-events:none;
-  }
+  } */
 
   /* ---------- navbar ---------- */
   .navbar-lcdc{
@@ -154,6 +154,7 @@
     box-shadow:0 10px 24px rgba(35,42,52,.1);
     transition:transform .25s ease;
   }
+  .swatch > img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block;}
   .swatch:hover{transform:scale(1.03);}
   .swatch .weave{position:absolute; inset:0;}
   .s1{ top:0; right:0; width:62%; height:60%; background:var(--bleu-atelier); transform:rotate(-1.5deg); }
@@ -218,7 +219,7 @@
   .t1{grid-column:1/4; grid-row:1/3; background:var(--bleu-atelier);}
   .t2{grid-column:4/7; grid-row:1/2; background:var(--rouge-fil);}
   .t3{grid-column:4/6; grid-row:2/3; background:var(--dore);}
-  .t4{grid-column:6/7; grid-row:2/3; background:var(--bleu-atelier-dark);}
+  .t4{grid-column: 4/7; grid-row: 1/3;; background:var(--rouge-fil);}
   @media (max-width: 860px){
     .mosaic{grid-template-columns:repeat(2,1fr); grid-template-rows:repeat(4, 130px);}
     .t1{grid-column:1/3; grid-row:1/2;}
@@ -955,9 +956,8 @@ input[type="radio"]:focus-visible + span {
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;
-    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    margin: 0; 
 }
 
 input[type=number] {

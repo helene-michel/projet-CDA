@@ -51,10 +51,11 @@ final class ArticlesController extends AbstractController
     #[Route('/article/{id}', name: 'app_article', options:['expose'=>true])]
     public function showArticle(
         Products $products,
-
+        Request $request
     ): Response
     {
-        
+        $session = $request->getSession();
+        dump($session->get('cart'));
         return $this->render('articles/show.html.twig', [
             'products' => $products
         ]);

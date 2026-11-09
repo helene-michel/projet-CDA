@@ -15,7 +15,7 @@ services:
         environment:
             SERVER_NAME: localhost
             MAILER_DSN: smtp://mailhog:1025
-            MESSENGER_TRANSPORT_DSN: amqp://symfony:symfony@rabbitmq:5672/%2f
+            
         volumes:
             - ./:/app
             - caddy_data:/data
@@ -70,51 +70,7 @@ services:
         networks:
             - default
 
-    rabbitmq:
-        image: rabbitmq:4-management-alpine
-        container_name: ${PROJECT_NAME}_rabbitmq
-        restart: unless-stopped
-        environment:
-            RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-            RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
-        ports:
-            - "5672:5672"
-            - "15672:15672"
-        volumes:
-            - rabbitmq_data:/var/lib/rabbitmq
-        healthcheck:
-            test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
-            interval: 5s
-            timeout: 5s
-            retries: 10
-        networks:
-            - default
-
-    messenger:
-        build:
-            context: .
-            args:
-                USER_ID: ${UID:-1000}
-                GROUP_ID: ${GID:-1000}
-        container_name: ${PROJECT_NAME}_messenger
-        restart: unless-stopped
-        command: php bin/console messenger:consume async --time-limit=3600 -vv
-        environment:
-            APP_ENV: ${APP_ENV}
-            MAILER_DSN: smtp://mailhog:1025
-            MESSENGER_TRANSPORT_DSN: amqp://symfony:symfony@rabbitmq:5672/%2f/messages
-            DATABASE_URL: "mysql://symfony:symfony@database:3306/app?serverVersion=8:4:0&charset=utf8mb4"
-        volumes:
-            - ./:/app
-        depends_on:
-            rabbitmq:
-                condition: service_healthy
-            database:
-                condition: service_healthy
-            mailhog:
-                condition: service_started
-        networks:
-            - default
+   
 
     mailhog:
         image: mailhog/mailhog
@@ -145,7 +101,6 @@ services:
 volumes:
     database_data:
     redis_data:
-    rabbitmq_data:
     caddy_data:
     caddy_config:
 

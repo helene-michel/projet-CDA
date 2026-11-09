@@ -39,7 +39,7 @@
 				<div class="price-big serif">{{ products.prixht }} €</div>
 
 				<p style="color:#4B5563; max-width:48ch; margin-bottom:1.6rem;">{{ products.description }}</p>
-				<form action="{{ path('app_cart_add') }}" method="post" data-controller="product">
+				<form action="{{ path('app_cart_add',{id:products.id}) }}" method="post" data-controller="product">
 					<div class="option-label">Taille</div>
 					<div class="size-group" >
 					{% for taille in ["xs", "s", "m", "l", "xl"] %}
@@ -184,13 +184,13 @@
 						</div>
 						<p style="max-width:32ch;">Le marketplace de la couture française : tissus, patrons et créations cousus par des artisanes près de chez vous.</p>
 					</div>
-					<div class="col-6 col-lg-2"><h6>Acheter</h6><a href="#">Vêtements</a><a href="#">Tissus</a><a href="#">Patrons</a><a href="#">Cours</a></div>
-					<div class="col-6 col-lg-2"><h6>Vendre</h6><a href="#">Devenir créatrice</a><a href="#">Tarifs</a><a href="#">Guide de vente</a></div>
+					<div class="col-6 col-lg-2"><h6>Acheter</h6><a href="#">Vêtements</a>
+					<div class="col-6 col-lg-2"><h6>Vendre</h6><a href="#">Devenir créatrice</a>
 					<div class="col-6 col-lg-2"><h6>Aide</h6><a href="#">Livraison</a><a href="#">Retours</a><a href="#">Contact</a></div>
-					<div class="col-6 col-lg-2"><h6>Bobine</h6><a href="#">À propos</a><a href="#">Mentions légales</a></div>
+					<div class="col-6 col-lg-2"><h6>LCDC</h6><a href="#">À propos</a><a href="#">Mentions légales</a></div>
 				</div>
 				<div class="footer-bottom d-flex flex-wrap justify-content-between">
-					<span>© 2026 Bobine — tous droits réservés</span>
+					<span>© 2026 LCDC — tous droits réservés</span>
 					<span>Fait en France</span>
 				</div>
 			</div>
