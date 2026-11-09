@@ -1,13 +1,17 @@
 {% extends 'admin/adminbase.html.twig' %}
 
-{% block title %}Edit Tags{% endblock %}
+{% block title %}Modifier la matière{% endblock %}
 
 {% block body %}
-    <h1>{{ ux_icon('lucide:pencil') }} Tags</h1>
+<div class="main-area col-12">
+    <div class="content">
+    <h1>Modifier la matière</h1>
 
-    {{ include('admin/tags/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('admin/tags/_form.html.twig', {'button_label': 'Enregistrer'}) }}
 
-    <a href="{{ path('admin_app_tags_index') }}">back to list</a>
+    <a href="{{ path('admin_app_tags_index') }}">Retour à la liste</a>
 
     {{ include('admin/tags/_delete_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}

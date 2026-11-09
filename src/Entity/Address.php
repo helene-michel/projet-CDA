@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\AdressRepository;
+use App\Repository\AddressRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: AdressRepository::class)]
-class Adress
+#[ORM\Entity(repositoryClass: AddressRepository::class)]
+class Address
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,15 +16,15 @@ class Adress
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $adresse = null;
+    private ?string $street = null;
 
     #[ORM\Column]
-    private ?string $CP = null;
+    private ?string $zipCode = null;
 
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
-    #[ORM\ManyToOne(inversedBy: 'adresse')]
+    #[ORM\ManyToOne(inversedBy: 'addresses')]
     private ?User $user = null;
 
     public function __construct()
@@ -35,26 +35,26 @@ class Adress
         return $this->id;
     }
 
-    public function getAdresse(): ?string
+    public function getStreet(): ?string
     {
-        return $this->adresse;
+        return $this->street;
     }
 
-    public function setAdresse(string $adresse): static
+    public function setStreet(string $street): static
     {
-        $this->adresse = $adresse;
+        $this->street = $street;
 
         return $this;
     }
 
-    public function getCP(): ?string
+    public function getZipCode(): ?string
     {
-        return $this->CP;
+        return $this->zipCode;
     }
 
-    public function setCP(string $CP): static
+    public function setZipCode(string $zipCode): static
     {
-        $this->CP = $CP;
+        $this->zipCode = $zipCode;
 
         return $this;
     }

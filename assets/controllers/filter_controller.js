@@ -1,26 +1,31 @@
 import { Controller } from '@hotwired/stimulus';
 
-// Même rendu que format_currency('EUR') côté Twig : "91,20 €"
+// Same output as format_currency('EUR') in Twig
 const priceFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
 
-export default class extends Controller {
+const escapeHtml = (text) => String(text ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
+export default class extends Controller {
     static values = {
         route: String,
-        csrf: String,
-        min: Number,
         max: Number,
     }
-    static targets = ["matiereList", "matiereToggle", "skeleton", "results", "choicePrice"]
+    static targets = ['materialList', 'materialToggle', 'skeleton', 'results', 'choicePrice', 'count', 'sort']
 
     connect() {
-        // On relit l'URL pour restaurer les filtres (rafraîchissement, lien partagé)
-        this.tags = new Set(new URLSearchParams(window.location.search).getAll('tags[]'));
-        this.price = new URLSearchParams(window.location.search).get('prix') ?? this.maxValue;
+        // Restore filters from the URL
+        const params = new URLSearchParams(window.location.search);
+        this.tags = new Set(params.getAll('tags[]'));
+        this.price = params.get('price') ?? this.maxValue;
+        this.sort = params.get('sort') ?? '';
         this.abortController = null;
+
         this.choicePriceTarget.value = this.price;
-        this.orderValue = new URLSearchParams(window.location.search).get('tri') ?? '';
-        this.syncCheckboxes();
+        this.sortTarget.value = this.sort;
+        this.element.querySelectorAll('input[type="checkbox"][data-id]').forEach((input) => {
+            input.checked = this.tags.has(input.dataset.id);
+        });
+
         this.getProducts();
     }
 
@@ -28,66 +33,41 @@ export default class extends Controller {
         this.abortController?.abort();
     }
 
-    // ---------- Gestion des filtres / URL ----------
+    // ---------- Filters ----------
 
     filterTag(event) {
-        const elm = event.currentTarget;
-        const id = elm.dataset.id;
-
-        if (elm.checked) {
-            this.tags.add(id);
-        } else {
-            this.tags.delete(id);
-        }
-
-        this.updateBrowserUrl();
-        this.getProducts();
+        const id = event.currentTarget.dataset.id;
+        event.currentTarget.checked ? this.tags.add(id) : this.tags.delete(id);
+        this.refresh();
     }
-    // ---------- Prix ----------
 
     priceFilter(event) {
-        const elm = event.target;
+        this.price = event.target.value;
+        this.refresh();
+    }
 
-        const price = elm.value;
-        this.price=price;
-        this.updateBrowserUrl();
+    orderPrice(event) {
+        this.sort = event.target.value;
+        this.refresh();
+    }
+
+    refresh() {
+        window.history.replaceState({}, '', `${window.location.pathname}?${this.buildParams()}`);
         this.getProducts();
     }
-    // Reconstruit les paramètres à partir de l'URL actuelle (les autres paramètres
-    // éventuels comme le prix ou le tri sont conservés) et remplace uniquement les tags.
+
     buildParams() {
-        const params = new URLSearchParams(window.location.search);
-        params.delete('tags[]');
-        params.delete('prix');
-        params.delete('tri');
-        this.tags.forEach(id => params.append('tags[]', id));
-        params.append('prix',this.price);
-        params.append('tri',this.orderValue);
+        const params = new URLSearchParams();
+        this.tags.forEach((id) => params.append('tags[]', id));
+        params.append('price', this.price);
+        params.append('sort', this.sort);
         return params;
     }
 
-    // Met à jour l'URL affichée dans le navigateur, sans recharger la page
-    updateBrowserUrl() {
-        const query = this.buildParams().toString();
-        const newUrl = query
-            ? `${window.location.pathname}?${query}`
-            : window.location.pathname;
-        window.history.replaceState({}, '', newUrl);
-    }
-
-    // Coche les cases correspondant aux tags présents dans l'URL
-    syncCheckboxes() {
-        this.element
-            .querySelectorAll('input[type="checkbox"][data-id]')
-            .forEach(input => {
-                input.checked = this.tags.has(input.dataset.id);
-            });
-    }
-
-    // ---------- Chargement des produits ----------
+    // ---------- Products ----------
 
     async getProducts() {
-        // Annule la requête précédente si l'utilisateur clique vite
+        // Cancel the previous request
         this.abortController?.abort();
         this.abortController = new AbortController();
 
@@ -98,90 +78,71 @@ export default class extends Controller {
         url.search = this.buildParams().toString();
 
         try {
-            const response = await fetch(url.toString(), {
-                method: "GET",
-                headers: { "X-CSRF-Token": this.csrfValue },
-                signal: this.abortController.signal,
-            });
+            const response = await fetch(url, { signal: this.abortController.signal });
             if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
-
-            this.card(await response.json());
+            this.render(await response.json());
         } catch (error) {
-            // Requête remplacée par une plus récente : on ne touche pas à l'interface
             if (error.name === 'AbortError') return;
             console.error(error);
+            this.countTarget.textContent = 'Erreur de chargement';
         }
 
         this.skeletonTarget.classList.add('d-none');
         this.resultsTarget.classList.remove('d-none');
     }
 
-    card(data) {
-        this.resultsTarget.innerHTML = data.map(d => {
-            const urlDetailArticle = Routing.generate('app_article', { id: d.id });
-            const urlPanierArticle = Routing.generate('app_panier_add', { id: d.id });
+    render(products) {
+        this.countTarget.textContent = `${products.length} résultat${products.length > 1 ? 's' : ''}`;
+
+        if (products.length === 0) {
+            this.resultsTarget.innerHTML = '<p class="col-12 text-muted-b">Aucune création ne correspond à ces filtres.</p>';
+            return;
+        }
+
+        this.resultsTarget.innerHTML = products.map((product) => {
+            const url = Routing.generate('app_article', { id: product.id });
 
             return `
             <div class="col-sm-6 col-lg-4">
                 <div class="product-card">
-                    <div class="product-img p-bleu">
-                        <div class="weave"></div>
-                        <span class="badge-fait-main"></span>
-                        <a href="#" class="fav" aria-label="Ajouter aux favoris">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                 stroke-width="1.8">
-                                <path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/>
-                            </svg>
-                        </a>
-                    </div>
+                    <a href="${url}" class="product-img p-bleu d-block">
+                        <img src="${escapeHtml(product.imageUrl)}" alt="" loading="lazy">
+                    </a>
                     <div class="product-body">
-                        <h3 class="product-title">${d.nom}</h3>
-                        <span class="product-creator">${d.user.nom}</span>
-                        <span class="product-price">${priceFormatter.format(d.prixTtc)}</span>
+                        <h3 class="product-title"><a href="${url}">${escapeHtml(product.name)}</a></h3>
+                        <span class="product-creator">${escapeHtml(product.sellerName)}</span>
+                        <span class="product-price">${priceFormatter.format(product.priceInclVat)}</span>
                         <div class="product-footer">
-                            <span class="product-rating">
-                                <a href="${urlDetailArticle}" class="btn-outline-b">Détail</a>
-                                <a href="${urlPanierArticle}" class="btn-primary-b">Panier</a>
-                            </span>
+                            <a href="${url}" class="btn-outline-b">Voir le produit</a>
                         </div>
                     </div>
                 </div>
-            </div>
-            `;
+            </div>`;
         }).join('');
     }
 
-    // ---------- Liste des matières ----------
+    // ---------- Materials list ----------
 
-    matiereToggle() {
-        const expanded = this.matiereListTarget.classList.toggle('expanded');
-        this.matiereToggleTarget.textContent = expanded ? 'Voir moins' : 'Voir les 44 matières';
+    materialToggle() {
+        const expanded = this.materialListTarget.classList.toggle('expanded');
+        this.materialToggleTarget.textContent = expanded ? 'Voir moins' : this.materialToggleTarget.dataset.label;
     }
 
-    matiereSearch(event) {
-        const elm = event.target;
-        const query = elm.value.trim().toLowerCase();
-        const items = this.matiereListTarget.querySelectorAll('.form-check');
+    materialToggleTargetConnected(element) {
+        element.dataset.label = element.textContent;
+    }
 
-        if (query) {
-            this.matiereListTarget.classList.add('expanded');
-            this.matiereToggleTarget.style.display = 'none';
-        } else {
-            this.matiereToggleTarget.style.display = '';
+    materialSearch(event) {
+        const query = event.target.value.trim().toLowerCase();
+
+        this.materialListTarget.classList.toggle('expanded', query !== '');
+        if (this.hasMaterialToggleTarget) {
+            this.materialToggleTarget.hidden = query !== '';
         }
 
-        items.forEach(item => {
+        this.materialListTarget.querySelectorAll('.form-check').forEach((item) => {
             const label = item.querySelector('label').textContent.toLowerCase();
-            item.style.display = (!query || label.includes(query)) ? 'block' : 'none';
+            item.style.display = label.includes(query) ? 'block' : 'none';
         });
     }
-        // ---------- Ordre des prix ----------
-    orderPrice(event){
-        const elm = event.target;
-        this.orderValue = elm.value;
-        this.updateBrowserUrl();
-        this.getProducts();
-    }
-
-    
 }

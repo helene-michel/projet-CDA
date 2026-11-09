@@ -23,77 +23,69 @@
     </header>
 
     {% if products is empty %}
-        <div class="seller-empty">
-            {{ ux_icon('lucide:package-open', { 'aria-hidden': 'true', class: 'seller-empty__icon' }) }}
-            <h2>Vous n'avez pas encore de produit</h2>
-            <p>Ajoutez votre première création pour la proposer aux clientes du comptoir.</p>
-            <a href="{{ path('seller_app_products_new') }}" class="btn-primary-b">Ajouter un produit</a>
-        </div>
+    <div class="seller-empty">
+        {{ ux_icon('lucide:package-open', { 'aria-hidden': 'true', class: 'seller-empty__icon' }) }}
+        <h2>Vous n'avez pas encore de produit</h2>
+        <p>Ajoutez votre première création pour la proposer aux clientes du comptoir.</p>
+        <a href="{{ path('seller_app_products_new') }}" class="btn-primary-b">Ajouter un produit</a>
+    </div>
     {% else %}
-        <div class="users-table-wrap">
-            <table class="users-table seller-products-table">
-                <caption class="visually-hidden">Liste de vos produits avec leurs prix et actions</caption>
-                <thead>
-                    <tr>
-                        <th scope="col">Produit</th>
-                        <th scope="col">Coloris</th>
-                        <th scope="col" class="num">Prix HT</th>
-                        <th scope="col" class="num">TVA</th>
-                        <th scope="col" class="num">Prix TTC</th>
-                        <th scope="col"><span class="visually-hidden">Actions</span></th>
-                    </tr>
-                </thead>
-                <tbody>
+    <div class="users-table-wrap">
+        <table class="users-table seller-products-table">
+            <caption class="visually-hidden">Liste de vos produits avec leurs prix et actions</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Produit</th>
+                    <th scope="col">Coloris</th>
+                    <th scope="col" class="num">Prix HT</th>
+                    <th scope="col" class="num">TVA</th>
+                    <th scope="col" class="num">Prix TTC</th>
+                    <th scope="col"><span class="visually-hidden">Actions</span></th>
+                </tr>
+            </thead>
+            <tbody>
                 {% for product in products %}
-                    <tr>
-                        <td>
-                            <div class="product-cell">
-                                {% if product.image is not empty %}
-                                    <img src="{{ asset('uploads/productImages/' ~ product.image|first) }}" alt=""
-                                         width="48" height="48" class="product-thumb" loading="lazy">
-                                {% else %}
-                                    <span class="product-thumb product-thumb--empty" aria-hidden="true">{{ product.nom|first|upper }}</span>
-                                {% endif %}
-                                <div>
-                                    <a class="pname" href="{{ path('seller_app_products_show', { id: product.id }) }}">{{ product.nom }}</a>
-                                    <div class="pcat">{{ product.category ? product.category.nom : 'Sans catégorie' }}</div>
-                                </div>
+                <tr>
+                    <td>
+                        <div class="product-cell">
+                            <img src="{{ product_image(product) }}" alt="" width="48" height="48" class="product-thumb" loading="lazy">
+                            <div>
+                                <p class="pname">{{
+                                    product.name }}</p>
+                                <div class="pcat">{{ product.category ? product.category.name : 'Sans catégorie' }}</div>
                             </div>
-                        </td>
-                        <td>
-                            {% if product.colors is empty %}
-                                <span class="text-muted-b">—</span>
-                            {% else %}
-                                <ul class="swatches" aria-label="Coloris disponibles">
-                                    {% for color in product.colors %}
-                                        <li class="seller-swatch" style="background: {{ color.code }}" title="{{ color.nom }}">
-                                            <span class="visually-hidden">{{ color.nom }}</span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </td>
-                        <td class="num">{{ product.prixHt|format_currency('EUR') }}</td>
-                        <td class="num">{{ product.TVA|format_number }}&nbsp;%</td>
-                        <td class="num price-ttc">{{ prix_ttc(product)|format_currency('EUR') }}</td>
-                        <td>
-                            <div class="row-actions">
-                                <a href="{{ path('seller_app_products_show', { id: product.id }) }}"
-                                   aria-label="Voir « {{ product.nom }} »" title="Voir">
-                                    {{ ux_icon('lucide:eye', { 'aria-hidden': 'true' }) }}
-                                </a>
-                                <a href="{{ path('seller_app_products_edit', { id: product.id }) }}"
-                                   aria-label="Modifier « {{ product.nom }} »" title="Modifier">
-                                    {{ ux_icon('lucide:pencil', { 'aria-hidden': 'true' }) }}
-                                </a>
-                                {{ include('seller/products/_delete_form.html.twig', { compact: true }) }}
-                            </div>
-                        </td>
-                    </tr>
+                        </div>
+                    </td>
+                    <td>
+                        {% if product.colors is empty %}
+                        <span class="text-muted-b">—</span>
+                        {% else %}
+                        <ul class="swatches" aria-label="Coloris disponibles">
+                            {% for color in product.colors %}
+                            <li class="seller-swatch" style="background: {{ color.code }}" title="{{ color.name }}">
+                                <span class="visually-hidden">{{ color.name }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </td>
+                    <td class="num">{{ product.priceExclVat|format_currency('EUR') }}</td>
+                    <td class="num">{{ product.vatRate|format_number }}&nbsp;%</td>
+                    <td class="num price-ttc">{{ price_incl_vat(product)|format_currency('EUR') }}</td>
+                    <td>
+                        <div class="row-actions">
+                            <a href="{{ path('seller_app_products_edit', { id: product.id }) }}"
+                                aria-label="Modifier « {{ product.name }} »" title="Modifier">
+                                {{ ux_icon('lucide:pencil', { 'aria-hidden': 'true' }) }}
+                            </a>
+                            {{ include('seller/products/_delete_form.html.twig', { compact: true }) }}
+                        </div>
+                    </td>
+                </tr>
                 {% endfor %}
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
+    </div>
     {% endif %}
 </main>
 {% endblock %}

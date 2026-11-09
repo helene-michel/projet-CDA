@@ -21,11 +21,11 @@ final class ColorController extends AbstractController
 
         $colorList = $this->em->getRepository(Color::class)->findAll();
         $colorUpdate = true;
-        $boutonText = "modifier";
+        $buttonText = "modifier";
         if(!$color){
             $color = new Color;
             $colorUpdate = false;
-            $boutonText = "ajouter";
+            $buttonText = "ajouter";
         }
         
         $form =  $this->createForm(ColorType::class, $color);
@@ -42,7 +42,7 @@ final class ColorController extends AbstractController
         return $this->render('admin/color/index.html.twig', [
             'colorList' => $colorList,
             'form' => $form,
-            'boutonText' => $boutonText,
+            'buttonText' => $buttonText,
         ]);
     }
     

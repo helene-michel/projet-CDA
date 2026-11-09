@@ -2,18 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\ProductsRepository;
+use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: ProductsRepository::class)]
-class Products
+#[ORM\Entity(repositoryClass: ProductRepository::class)]
+class Product
 {
     /** Taux de TVA français applicables (en %). Float pour la comparaison stricte avec la valeur en base. */
-    public const TVA_RATES = [20.0, 10.0, 5.5, 2.1];
+    public const VAT_RATES = [20.0, 10.0, 5.5, 2.1];
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -23,7 +23,7 @@ class Products
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Donnez un nom à votre produit.')]
     #[Assert\Length(max: 255, maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères.')]
-    private ?string $nom = null;
+    private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Décrivez votre produit (matière, coupe, entretien…).')]
@@ -34,25 +34,25 @@ class Products
     #[Assert\NotNull(message: 'Indiquez un prix.')]
     #[Assert\Positive(message: 'Le prix doit être supérieur à 0.')]
     #[Assert\LessThan(value: 100000, message: 'Le prix doit être inférieur à {{ compared_value }} €.')]
-    private ?float $prix_ht = null;
+    private ?float $priceExclVat = null;
 
     #[ORM\Column]
     #[Assert\NotNull(message: 'Choisissez un taux de TVA.')]
-    #[Assert\Choice(choices: self::TVA_RATES, message: 'Taux de TVA invalide.')]
-    private ?float $TVA = null;
+    #[Assert\Choice(choices: self::VAT_RATES, message: 'Taux de TVA invalide.')]
+    private ?float $vatRate = null;
     /**
      * @var list<string>
      */
      #[ORM\Column]
-    private array $image = [];
+    private array $images = [];
 
     /**
-     * @var Collection<int, Tags>
+     * @var Collection<int, Tag>
      */
-    #[ORM\ManyToMany(targetEntity: Tags::class, inversedBy: 'products')]
-    private Collection $Tags;
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'products')]
+    private Collection $tags;
 
-    #[ORM\ManyToOne(inversedBy: 'Products')]
+    #[ORM\ManyToOne(inversedBy: 'products')]
     #[Assert\NotNull(message: 'Choisissez une catégorie.')]
     private ?Category $category = null;
 
@@ -67,7 +67,7 @@ class Products
 
     public function __construct()
     {
-        $this->Tags = new ArrayCollection();
+        $this->tags = new ArrayCollection();
         $this->colors = new ArrayCollection();
     }
 
@@ -76,14 +76,14 @@ class Products
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->nom;
+        return $this->name;
     }
 
-    public function setNom(?string $nom): static
+    public function setName(?string $name): static
     {
-        $this->nom = $nom;
+        $this->name = $name;
 
         return $this;
     }
@@ -98,50 +98,50 @@ class Products
 
         return $this;
     }
-    public function getPrixHt(): ?float
+    public function getPriceExclVat(): ?float
     {
-        return $this->prix_ht;
+        return $this->priceExclVat;
     }
 
-    public function setPrixHt(?float $prix_ht): static
+    public function setPriceExclVat(?float $priceExclVat): static
     {
-        $this->prix_ht = $prix_ht;
+        $this->priceExclVat = $priceExclVat;
 
         return $this;
     }
 
-    public function getTVA(): ?float
+    public function getVatRate(): ?float
     {
-        return $this->TVA;
+        return $this->vatRate;
     }
 
-    public function setTVA(?float $TVA): static
+    public function setVatRate(?float $vatRate): static
     {
-        $this->TVA = $TVA;
+        $this->vatRate = $vatRate;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Tags>
+     * @return Collection<int, Tag>
      */
     public function getTags(): Collection
     {
-        return $this->Tags;
+        return $this->tags;
     }
 
-    public function addTag(Tags $tag): static
+    public function addTag(Tag $tag): static
     {
-        if (!$this->Tags->contains($tag)) {
-            $this->Tags->add($tag);
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
         }
 
         return $this;
     }
 
-    public function removeTag(Tags $tag): static
+    public function removeTag(Tag $tag): static
     {
-        $this->Tags->removeElement($tag);
+        $this->tags->removeElement($tag);
 
         return $this;
     }
@@ -170,14 +170,14 @@ class Products
         return $this;
     }
 
-    public function getImage(): ?array
+    public function getImages(): array
     {
-        return $this->image;
+        return $this->images;
     }
 
-    public function setImage(array $image): self
+    public function setImages(array $images): self
     {
-        $this->image = $image;
+        $this->images = $images;
 
         return $this;
     }

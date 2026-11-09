@@ -2,15 +2,15 @@
 
 namespace App\Tests\Controller\DashboardSeller;
 
-use App\Entity\Products;
-use App\Tests\Controller\CreatesProductsTrait;
+use App\Entity\Product;
+use App\Tests\Controller\CreatesProductTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ProductsControllerSellerTest extends WebTestCase
 {
-    use CreatesProductsTrait;
+    use CreatesProductTrait;
 
     private KernelBrowser $client;
 
@@ -91,6 +91,6 @@ class ProductsControllerSellerTest extends WebTestCase
         self::assertResponseRedirects('/seller/products');
         $this->client->followRedirect();
         self::assertSelectorExists('.seller-empty');
-        self::assertNull(static::getContainer()->get(EntityManagerInterface::class)->find(Products::class, $id));
+        self::assertNull(static::getContainer()->get(EntityManagerInterface::class)->find(Product::class, $id));
     }
 }

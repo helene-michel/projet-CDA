@@ -4,7 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use App\Entity\Seller;
-use App\Entity\Adress;
+use App\Entity\Address;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -25,8 +25,8 @@ class UserFixtures extends Fixture
 
         for($i=0 ;$i<=50; $i++){
             $user = new User;
-            $user->setPrenom($faker->firstName());
-            $user->setNom($faker->lastName());
+            $user->setFirstName($faker->firstName());
+            $user->setLastName($faker->lastName());
             $user->setEmail($faker->email());
             //$user->setRoles(['ROLE_USER', 'ROLE_SELLER', 'ROLE_ADMIN']);
             $roles = [['ROLE_USER'],['ROLE_USER','ROLE_SELLER'], ['ROLE_USER','ROLE_ADMIN']];
@@ -42,24 +42,24 @@ class UserFixtures extends Fixture
             $user->setIsVerified(true);
             
 
-            $adress = new Adress;
-            $adress->setAdresse($faker->address());
-            $adress->setCP($faker->postcode());
-            $adress->setType('principal');
+            $address = new Address;
+            $address->setStreet($faker->address());
+            $address->setZipCode($faker->postcode());
+            $address->setType('principal');
 
-            $user->addAdresse($adress);
+            $user->addAddress($address);
 
             if(in_array('ROLE_SELLER', $user->getRoles())){
                 $seller = new Seller;
                 
-                $seller->setSIRET($faker->siret());
+                $seller->setSiret($faker->siret());
                 $seller->setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
                 Proin fringilla lacus non diam tincidunt vulputate. Curabitur gravida quam ut volutpat
                 luctus. In eleifend, nulla vel pretium laoreet, ligula est molestie augue, quis hendrerit 
                 sem sem quis nunc. Donec imperdiet risus massa, id venenatis lacus feugiat non. Maecenas 
                 tortor sapien, faucibus nec mauris ut, ornare fringilla magna. Donec libero metus, mattis
                 ut quam quis, facilisis sollicitudin orci. Vestibulum sed ipsum non neque bibendum interdum. ");
-                $seller->setRaisonSocial($user->getPrenom().'cie');
+                $seller->setCompanyName($user->getFirstName().'cie');
                 $user->setSeller($seller);
             }             
                
@@ -68,8 +68,8 @@ class UserFixtures extends Fixture
         } 
 
         $user = new User;
-        $user->setPrenom('Helene');
-        $user->setNom('MICHEL');
+        $user->setFirstName('Helene');
+        $user->setLastName('MICHEL');
         $user->setEmail('helenemichel@gmail.com');
         $user->setRoles(['ROLE_USER','ROLE_ADMIN']);
         
@@ -83,12 +83,12 @@ class UserFixtures extends Fixture
         $user->setIsVerified(true);
         
 
-        $adress = new Adress;
-        $adress->setAdresse($faker->address());
-        $adress->setCP($faker->postcode());
-        $adress->setType('principal');
+        $address = new Address;
+        $address->setStreet($faker->address());
+        $address->setZipCode($faker->postcode());
+        $address->setType('principal');
 
-        $user->addAdresse($adress);
+        $user->addAddress($address);
             
         $manager->persist($user);
 

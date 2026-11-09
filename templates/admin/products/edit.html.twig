@@ -1,13 +1,16 @@
 {% extends 'admin/adminbase.html.twig' %}
 
-{% block title %}Edit Products{% endblock %}
+{% block title %}Modifier {{ product.name }}{% endblock %}
 
 {% block body %}
-    <h1>{{ ux_icon('lucide:pencil') }} Products</h1>
-
-    {{ include('admin/products/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('admin_app_products_index') }}">back to list</a>
-
-    {{ include('admin/products/_delete_form.html.twig') }}
+<div class="main-area col-12">
+    <div class="content">
+        <h1>Modifier {{ product.name }}</h1>
+        {{ include('admin/products/_form.html.twig', {button_label: 'Enregistrer'}) }}
+        <div class="d-flex gap-3 align-items-center">
+            <a href="{{ path('admin_app_products_index') }}">Retour à la liste</a>
+            {{ include('admin/products/_delete_form.html.twig') }}
+        </div>
+    </div>
+</div>
 {% endblock %}

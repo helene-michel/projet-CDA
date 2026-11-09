@@ -10,8 +10,8 @@
             <div class="d-flex flex-column align-items-center text-center gap-3 py-5">
                 <h1 class="h3 my-3 font-weight-normal">Vous êtes déjà connecté</h1>
                 <p class="mb-0">
-                    Connecté en tant que <strong>{{ app.user.prenom ?: app.user.userIdentifier }}</strong>
-                    {%- if app.user.prenom %} ({{ app.user.userIdentifier }}){% endif %}.
+                    Connecté en tant que <strong>{{ app.user.firstName ?: app.user.userIdentifier }}</strong>
+                    {%- if app.user.firstName %} ({{ app.user.userIdentifier }}){% endif %}.
                 </p>
                 <div class="d-flex flex-wrap justify-content-center gap-3 mt-2">
                     <a href="{{ path('app_base') }}" class="btn-primary-b">Retour à l'accueil</a>

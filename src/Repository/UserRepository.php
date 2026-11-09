@@ -34,25 +34,24 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    public function allUserQuery(?array $roles=[]):Query {
-        $q = $this->createQueryBuilder('u');
+    public function allUserQuery(?array $roles = [], ?string $search = null): Query
+    {
+        $q = $this->createQueryBuilder('u')->orderBy('u.id', 'ASC');
 
-        if($roles){
-            foreach($roles as $role){
-                $q
-                ->andWhere('u.roles LIKE :role')
-                ->setParameter('role', '%"' . $role . '"%')
-                ;
-            }
-            
+        foreach (array_values($roles ?? []) as $i => $role) {
+            $q->andWhere('u.roles LIKE :role'.$i)
+                ->setParameter('role'.$i, '%"'.$role.'"%');
         }
-        $q
-        ->orderBy('u.id', 'ASC');
-        return $q->getQuery()
-            ;
-        
+
+        if ($search) {
+            $q->andWhere('u.email LIKE :search OR u.firstName LIKE :search OR u.lastName LIKE :search')
+                ->setParameter('search', '%'.$search.'%');
+        }
+
+        return $q->getQuery();
     }
-   public function countGroupedByRole(array $rolesToCount): array
+
+    public function countGroupedByRole(array $rolesToCount): array
     {
         $counts = [];
         foreach ($rolesToCount as $role) {
@@ -65,28 +64,5 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         }
         return $counts;
     }
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
 
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

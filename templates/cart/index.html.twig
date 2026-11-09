@@ -4,18 +4,69 @@
 {% block meta_robots %}noindex, nofollow{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<main class="seller-page container-xxl py-4 py-lg-5">
+    <header class="seller-head">
+        <h1>Mon panier</h1>
+    </header>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/app/src/Controller/CartController.php</code></li>
-        <li>Your template at <code>/app/templates/cart/index.html.twig</code></li>
-    </ul>
-</div>
+    {% if lines is empty %}
+    <div class="seller-empty">
+        {{ ux_icon('lucide:package-open', { 'aria-hidden': 'true', class: 'seller-empty__icon' }) }}
+        <h2>Votre panier est vide</h2>
+        <p>Parcourez les créations de nos couturières pour le remplir.</p>
+        <a href="{{ path('app_base') }}" class="btn-primary-b">Découvrir les créations</a>
+    </div>
+    {% else %}
+    <div class="users-table-wrap">
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th scope="col">Produit</th>
+                    <th scope="col">Taille</th>
+                    <th scope="col">Coloris</th>
+                    <th scope="col" class="num">Quantité</th>
+                    <th scope="col" class="num">Total TTC</th>
+                    <th scope="col"><span class="visually-hidden">Actions</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for line in lines %}
+                <tr>
+                    <td>
+                        <div class="product-cell">
+                            <img src="{{ product_image(line.product) }}" alt="" width="48" height="48" class="product-thumb">
+                            <a class="pname" href="{{ path('app_article', { id: line.product.id }) }}">{{ line.product.name }}</a>
+                        </div>
+                    </td>
+                    <td>{{ line.size ? line.size|upper : '—' }}</td>
+                    <td>
+                        {% if line.color %}
+                        <span class="seller-swatch d-inline-block align-middle" style="background: {{ line.color.code }}"></span>
+                        {{ line.color.name }}
+                        {% else %}—{% endif %}
+                    </td>
+                    <td class="num">{{ line.quantity }}</td>
+                    <td class="num">{{ line.total|format_currency('EUR') }}</td>
+                    <td>
+                        <form method="post" action="{{ path('app_cart_remove', { index: line.index }) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('remove_cart') }}">
+                            <button type="submit" class="btn btn-link p-0" aria-label="Retirer {{ line.product.name }}" title="Retirer">
+                                {{ ux_icon('lucide:trash', { 'aria-hidden': 'true' }) }}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="4">Total</th>
+                    <td class="num price-ttc">{{ total|format_currency('EUR') }}</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    {% endif %}
+</main>
 {% endblock %}

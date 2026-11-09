@@ -14,7 +14,7 @@ class ColorType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', TextType::class, [
+            ->add('name', TextType::class, [
                 'label'=> 'nom'
             ])
             ->add('code', TypeColorType::class, [

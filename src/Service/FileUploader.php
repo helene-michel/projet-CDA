@@ -1,6 +1,8 @@
 <?php
+
 namespace App\Service;
 
+use App\Entity\Product;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -9,28 +11,34 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class FileUploader
 {
     public function __construct(
-        #[Autowire('%kernel.project_dir%/public/uploads/productImages')]
+        #[Autowire('%kernel.project_dir%/public/'.ProductImage::DIRECTORY)]
         private string $targetDirectory,
         private SluggerInterface $slugger,
     ) {
     }
 
-    /**
-     * @throws FileException si le fichier n'a pas pu être déplacé (à gérer par l'appelant)
-     */
+    /** @throws FileException */
     public function upload(UploadedFile $file): string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = $this->slugger->slug($originalFilename);
-        $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+        $fileName = $this->slugger->slug($originalFilename).'-'.uniqid().'.'.$file->guessExtension();
 
-        $file->move($this->getTargetDirectory(), $fileName);
+        $file->move($this->targetDirectory, $fileName);
 
         return $fileName;
     }
 
-    public function getTargetDirectory(): string
+    /**
+     * @param UploadedFile[] $files
+     *
+     * @throws FileException
+     */
+    public function addProductImages(Product $product, array $files): void
     {
-        return $this->targetDirectory;
+        $filenames = $product->getImages();
+        foreach ($files as $file) {
+            $filenames[] = $this->upload($file);
+        }
+        $product->setImages($filenames);
     }
 }

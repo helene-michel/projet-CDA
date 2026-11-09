@@ -2,7 +2,7 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Products;
+use App\Entity\Product;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  * Un vendeur ne peut gérer (voir dans son espace, modifier, supprimer) que ses propres produits.
  * Un administrateur peut tout gérer.
  *
- * @extends Voter<string, Products>
+ * @extends Voter<string, Product>
  */
 final class ProductVoter extends Voter
 {
@@ -25,7 +25,7 @@ final class ProductVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return self::MANAGE === $attribute && $subject instanceof Products;
+        return self::MANAGE === $attribute && $subject instanceof Product;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool

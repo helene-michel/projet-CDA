@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class SeoControllerTest extends WebTestCase
 {
-    use CreatesProductsTrait;
+    use CreatesProductTrait;
 
     private KernelBrowser $client;
 

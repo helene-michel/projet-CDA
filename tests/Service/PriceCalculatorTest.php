@@ -2,7 +2,7 @@
 
 namespace App\Tests\Service;
 
-use App\Entity\Products;
+use App\Entity\Product;
 use App\Service\PriceCalculator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -25,22 +25,22 @@ class PriceCalculatorTest extends KernelTestCase
     }
 
     #[DataProvider('prices')]
-    public function testTtc(float $ht, float $tva, float $expected): void
+    public function testInclVat(float $priceExclVat, float $vatRate, float $expected): void
     {
-        self::assertSame($expected, $this->calculator->ttc($ht, $tva));
+        self::assertSame($expected, $this->calculator->inclVat($priceExclVat, $vatRate));
     }
 
-    public function testPrixTtcDuProduit(): void
+    public function testProductPriceInclVat(): void
     {
-        $product = (new Products())->setNom('Robe')->setPrixHt(89.5)->setTVA(20);
+        $product = (new Product())->setName('Robe')->setPriceExclVat(89.5)->setVatRate(20);
 
-        self::assertSame(107.4, $this->calculator->getPrixTtc($product));
+        self::assertSame(107.4, $this->calculator->getPriceInclVat($product));
     }
 
-    public function testProduitSansTvaLeveUneException(): void
+    public function testProductWithoutVatThrows(): void
     {
         $this->expectException(\LogicException::class);
 
-        $this->calculator->getPrixTtc((new Products())->setNom('Robe')->setPrixHt(89.5));
+        $this->calculator->getPriceInclVat((new Product())->setName('Robe')->setPriceExclVat(89.5));
     }
 }

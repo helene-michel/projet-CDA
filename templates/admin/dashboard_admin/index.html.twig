@@ -1,6 +1,6 @@
 {% extends 'admin/adminbase.html.twig' %}
 
-{% block title %}Tableau de bord — Admin Bobine{% endblock %}
+{% block title %}Tableau de bord{% endblock %}
 
 {% block body %}
 
@@ -23,7 +23,6 @@
                         </span>
                     </div>
                     <div class="stat-value">{{ userCount|default(0)|number_format(0, ',', ' ') }}</div>
-                    <div class="stat-sub">+{{ newUsersWeek|default(0) }} cette semaine</div>
                 </div>
 
                 <div class="stat-card">
@@ -34,7 +33,7 @@
                         </span>
                     </div>
                     <div class="stat-value">{{ articleCount|default(0)|number_format(0, ',', ' ') }}</div>
-                    <div class="stat-sub">{{ articlesOnline|default(0) }} en ligne</div>
+                    <div class="stat-sub">en ligne</div>
                 </div>
 
                 <div class="stat-card">
@@ -79,10 +78,7 @@
                     <div class="stat-value">{{ averageRating|default(0)|number_format(1, ',', ' ') }} / 5</div>
                 </div>
 
-                <div class="stat-card stat-card-sm">
-                    <div class="stat-label">Inscriptions (7 j)</div>
-                    <div class="stat-value">{{ newUsersWeek|default(0) }}</div>
-                </div>
+                
 
             </div>
 
@@ -157,10 +153,10 @@
                                 <span class="avatar-sm">{{ user.email|slice(0, 2)|upper }}</span>
                                 <div class="meta">
                                     <div class="uname">{{ user.email }}</div>
-                                    <div class="uemail">{{ user.createdAt ? user.createdAt|date('d/m/Y') : '' }}</div>
+                                    <div class="uemail">{{ user.displayName }}</div>
                                 </div>
                             </div>
-                            {% if 'ROLE_VENDEUSE' in user.roles %}
+                            {% if 'ROLE_SELLER' in user.roles %}
                                 <span class="pill pill-vendeuse">Vendeuse</span>
                             {% else %}
                                 <span class="pill pill-cliente">Cliente</span>

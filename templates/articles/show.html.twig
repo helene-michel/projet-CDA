@@ -1,240 +1,186 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ products.nom }}{% endblock %}
+{% set seller = product.user %}
+{% set sellerName = seller ? (seller.seller ? seller.seller.companyName : seller.displayName) : 'Créatrice indépendante' %}
+{% set sellerInitials = sellerName|split(' ')|slice(0, 2)|map(word => word|first|upper)|join %}
+
+{% block title %}{{ product.name }}{% endblock %}
 {% block og_type %}product{% endblock %}
+{% block og_image %}{{ absolute_url(product_image(product)) }}{% endblock %}
 {% block meta_description %}
-    {%- set description = (products.description ?? '')|striptags|trim -%}
-    {{- description|length > 155 ? description|slice(0, 154) ~ '…' : description -}}
+{%- set description = (product.description ?? '')|striptags|trim -%}
+{{- description|length > 155 ? description|slice(0, 154) ~ '…' : description -}}
 {% endblock %}
 
 {% block structured_data %}
-    <script type="application/ld+json">
-        {{ {
-            '@context': 'https://schema.org',
-            '@type': 'Product',
-            name: products.nom,
-            description: (products.description ?? '')|striptags|trim,
-            url: url('app_article', { id: products.id }),
-            category: products.category ? products.category.nom : null,
-            offers: {
-                '@type': 'Offer',
-                price: prix_ttc(products),
-                priceCurrency: 'EUR',
-                url: url('app_article', { id: products.id }),
-            },
-        }|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_HEX_TAG'))|raw }}
-    </script>
+<script type="application/ld+json">
+    {{ {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.name,
+        description: (product.description ?? '')|striptags|trim,
+        image: absolute_url(product_image(product)),
+        url: url('app_article', { id: product.id }),
+        category: product.category ? product.category.name : null,
+        offers: {
+            '@type': 'Offer',
+            price: price_incl_vat(product),
+            priceCurrency: 'EUR',
+            url: url('app_article', { id: product.id }),
+        },
+    }|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_HEX_TAG'))|raw }}
+</script>
 {% endblock %}
 
 {% block body %}
 
-	<!-- ===================== FIL D'ARIANE ===================== -->
-	<div class="container-xxl">
-		<div class="breadcrumb-simple"><a href="#">Accueil</a> / <a href="#">Vêtements sur-mesure</a> / <a href="#">Robes</a> / <span>Robe en lin Camille</span></div>
-	</div>
-
-	<!-- ===================== PRODUIT ===================== -->
-	<section class="container-xxl py-4">
-		<div class="row g-5">
-
-			<!-- GALERIE -->
-			<div class="col-lg-6">
-				<div class="gallery-main p-bleu weave" id="galleryMain">
-					<span class="badge-fait-main">Fait main</span>
-				</div>
-				<div class="gallery-thumbs">
-					<div class="thumb active p-bleu weave" data-color="p-bleu" onclick="setGallery(this)"></div>
-					<div class="thumb p-rouge weave" data-color="p-rouge" onclick="setGallery(this)"></div>
-					<div class="thumb p-sable weave" data-color="p-sable" onclick="setGallery(this)"></div>
-					<div class="thumb p-dore weave" data-color="p-dore" onclick="setGallery(this)"></div>
-				</div>
-			</div>
-
-			<!-- INFOS -->
-			<div class="col-lg-6">
-				<div>
-					<h1 class="product-title-lg">{{ products.nom }}</h1>
-            
-					<div class="creator-line">
-						<span class="avatar-sm">FL</span><!--ajouter avatar du seller plutot que les initiales-->
-						<a href="#">{{ products.User.nom }} {{ products.User.prenom }}</a>
-					</div>
-				</div>
-				<div class="price-big serif">{{ prix_ttc(products)|format_currency('EUR') }} <small class="text-body-secondary fs-6">TTC</small></div>
-
-				<p style="color:#4B5563; max-width:48ch; margin-bottom:1.6rem;">{{ products.description }}</p>
-				<form action="{{ path('app_cart_add',{id:products.id}) }}" method="post" data-controller="product">
-					<div class="option-label">Taille</div>
-					<div class="size-group" >
-					{% for taille in ["xs", "s", "m", "l", "xl"] %}
-						<label class="size-pill" for="{{ taille }}">
-							<input
-								id="{{ taille }}"
-								name="taille"
-								type="radio"
-								value="{{ taille }}"
-								required
-							>
-							{{ taille|upper }}
-						</label>
-					{% endfor %}
-						
-					</div>
-
-					<div class="option-label">Coloris</div>
-					<div class="color-group">
-						{% for color in products.colors %}
-							<label class="color-dot" for="color-{{ color.id }}" style="background:{{ color.code }}">
-								<input type="radio" id="color-{{ color.id }}" name="color" value="{{ color.id }}" required >
-							</label>
-						{% endfor %}
-        
-					</div>
-
-					<div class="option-label">Quantité</div>
-					<div class="qty-row">
-						<div class="qty-stepper">
-							<span aria-label="Diminuer" data-action="click->product#less">−</span>
-							<input type="number" class="qty form-control" name="number" id="number" value="1" data-product-target="number">
-							<span aria-label="Augmenter" data-action="click->product#more">+</span>
-						</div>
-					</div>
-
-					<div class="action-row">
-						<button type="submit" class="btn-primary-b btn-block" >Ajouter au panier</button>
-					</div>
-					<input type="hidden" value="{{ csrf_token('add_cart') }}" name="_token">
-				</form>
-      
-
-				<div class="mini-trust">
-					<div class="item"><span class="pastille" style="background:var(--bleu-atelier)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-7h6v7"/></svg></span>Cousue à la commande, expédiée sous 7 jours</div>
-					<div class="item"><span class="pastille" style="background:var(--rouge-fil)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="1"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>Paiement sécurisé</div>
-					<div class="item"><span class="pastille" style="background:var(--dore)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/><circle cx="12" cy="10" r="2.4"/></svg></span>Cousue à Rennes par Atelier Fleur de Lin</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- ONGLETS -->
-		<div data-controller="navigation">
-			<div class="tabs-nav" data-navigation-target="btnPanel">
-				<button class="active" data-navigation-id-param="tabDesc" data-action="click->navigation#setTab">Description</button>
-				<button data-navigation-id-param="tabCompo" data-action="click->navigation#setTab">Composition &amp; entretien</button>
-			</div>
-
-			<div class="tab-panel active" id="tabDesc" data-navigation-target="tabPanel">
-				<p>{{ products.description }}</p>
-				<p>Comptez 5 à 7 jours de confection avant expédition.</p>
-			</div>
-
-			<div class="tab-panel" id="tabCompo" data-navigation-target="tabPanel">
-				<ul>
-					<li>100% lin lavé, origine France</li>
-					<li>Doublure en coton bio</li>
-					<li>Lavage à 30°C, cycle délicat</li>
-					<li>Repassage à température moyenne, envers du tissu</li>
-					<li>Ne pas mettre au sèche-linge</li>
-				</ul>
-			</div>
-
-		</div>
-  
-		<!-- CRÉATRICE -->
-		<div class="creator-spotlight">
-			<span class="avatar-lg">FL</span>
-			<div>
-				<h3>Atelier Fleur de Lin</h3>
-				<p>Couturière installée à Rennes depuis 2018, spécialisée dans les vêtements en lin français. Plus de 600 pièces cousues à la main pour ses clientes.</p>
-			</div>
-			<a href="#" class="btn-outline-b">Voir le profil</a>
-		</div>
-
-		{# <!-- VOUS AIMEREZ AUSSI -->
-  <div class="section-head compact">
-    <h2>Vous aimerez aussi</h2>
-  </div>
-  <div class="row g-4">
-    <div class="col-sm-6 col-lg-3">
-      <div class="product-card">
-        <div class="product-img p-rouge weave"><a href="#" class="fav" aria-label="Favoris"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/></svg></a></div>
-        <div class="product-body">
-          <span class="product-title">Foulard en soie Vermillon</span>
-          <span class="product-creator">La Maison Vermillon</span>
-          <div class="product-footer"><span class="product-price">45 €</span></div>
-        </div>
-      </div>
+<!-- ===================== FIL D'ARIANE ===================== -->
+<div class="container-xxl">
+    <div class="breadcrumb-simple">
+        <a href="{{ path('app_base') }}">Accueil</a> /
+        {% if product.category %}
+        <a href="{{ path('app_articles', { id: product.category.id }) }}">{{ product.category.name }}</a> /
+        {% endif %}
+        <span>{{ product.name }}</span>
     </div>
-    <div class="col-sm-6 col-lg-3">
-      <div class="product-card">
-        <div class="product-img p-sable weave"><a href="#" class="fav" aria-label="Favoris"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/></svg></a></div>
-        <div class="product-body">
-          <span class="product-title">Jupe évasée en coton bio</span>
-          <span class="product-creator">Atelier Fleur de Lin</span>
-          <div class="product-footer"><span class="product-price">62 €</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6 col-lg-3">
-      <div class="product-card">
-        <div class="product-img p-dore weave"><a href="#" class="fav" aria-label="Favoris"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/></svg></a></div>
-        <div class="product-body">
-          <span class="product-title">Sac en lin brodé</span>
-          <span class="product-creator">Cousu Main par Élise</span>
-          <div class="product-footer"><span class="product-price">38 €</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6 col-lg-3">
-      <div class="product-card">
-        <div class="product-img p-bleudark weave"><a href="#" class="fav" aria-label="Favoris"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/></svg></a></div>
-        <div class="product-body">
-          <span class="product-title">Chemisier en popeline</span>
-          <span class="product-creator">La Maison Vermillon</span>
-          <div class="product-footer"><span class="product-price">75 €</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> #}
+</div>
 
-		<!-- ===================== FOOTER ===================== -->
-		<footer>
-			<div class="container-xxl">
-				<div class="row gy-4">
-					<div class="col-lg-4">
-						<div class="brand-mark mb-3">
-							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="7"/><path d="M12 5c-2 2-2 12 0 14M12 5c2 2 2 12 0 14M5 12h14"/></svg>
-							Bobine
-						</div>
-						<p style="max-width:32ch;">Le marketplace de la couture française : tissus, patrons et créations cousus par des artisanes près de chez vous.</p>
-					</div>
-					<div class="col-6 col-lg-2"><h6>Acheter</h6><a href="#">Vêtements</a>
-					<div class="col-6 col-lg-2"><h6>Vendre</h6><a href="#">Devenir créatrice</a>
-					<div class="col-6 col-lg-2"><h6>Aide</h6><a href="#">Livraison</a><a href="#">Retours</a><a href="#">Contact</a></div>
-					<div class="col-6 col-lg-2"><h6>LCDC</h6><a href="#">À propos</a><a href="#">Mentions légales</a></div>
-				</div>
-				<div class="footer-bottom d-flex flex-wrap justify-content-between">
-					<span>© 2026 LCDC — tous droits réservés</span>
-					<span>Fait en France</span>
-				</div>
-			</div>
-		</footer>
-		<script>
-			function setGallery(el) {
-				document
-					.querySelectorAll(".thumb")
-					.forEach((t) => t.classList.remove("active"));
-				el.classList.add("active");
-				const main = document.getElementById("galleryMain");
-				main.classList.remove(
-					"p-bleu",
-					"p-rouge",
-					"p-sable",
-					"p-dore",
-					"p-bleudark",
-				);
-				main.classList.add(el.dataset.color);
-			}
-		</script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<!-- ===================== PRODUIT ===================== -->
+<section class="container-xxl py-4">
+    <div class="row g-5">
+
+        <!-- GALERIE -->
+        {% set images = product_images(product) %}
+        <div class="col-lg-6" data-controller="gallery">
+            <div class="gallery-main">
+                <span class="badge-fait-main">Fait main</span>
+                <img src="{{ images|first }}" alt="{{ product.name }}" id="galleryMainImg" data-gallery-target="main">
+            </div>
+            {% if images|length > 1 %}
+            <div class="gallery-thumbs">
+                {% for image in images %}
+                <button type="button" class="thumb {{ loop.first ? 'active' }}" data-src="{{ image }}"
+                    data-gallery-target="thumb" data-action="gallery#select" aria-label="Voir la photo {{ loop.index }}">
+                    <img src="{{ image }}" alt="" loading="lazy">
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- INFOS -->
+        <div class="col-lg-6">
+            <h1 class="product-title-lg">{{ product.name }}</h1>
+            <div class="creator-line">
+                <span class="avatar-sm">{{ sellerInitials }}</span>
+                <span>{{ sellerName }}</span>
+            </div>
+            <div class="price-big serif">{{ price_incl_vat(product)|format_currency('EUR') }} <small class="text-body-secondary fs-6">TTC</small></div>
+
+            <form action="{{ path('app_cart_add', { id: product.id }) }}" method="post" data-controller="product">
+                <div class="option-label">Taille</div>
+                <div class="size-group">
+                    {% for size in ['xs', 's', 'm', 'l', 'xl'] %}
+                    <label class="size-pill" for="size-{{ size }}">
+                        <input id="size-{{ size }}" name="size" type="radio" value="{{ size }}" required>
+                        {{ size|upper }}
+                    </label>
+                    {% endfor %}
+                </div>
+
+                {% if product.colors is not empty %}
+                <div class="option-label">Coloris</div>
+                <div class="color-group">
+                    {% for color in product.colors %}
+                    <label class="color-dot" for="color-{{ color.id }}" style="background:{{ color.code }}" title="{{ color.name }}">
+                        <input type="radio" id="color-{{ color.id }}" name="color" value="{{ color.id }}" required>
+                        <span class="visually-hidden">{{ color.name }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="option-label">Quantité</div>
+                <div class="qty-row">
+                    <div class="qty-stepper">
+                        <button type="button" aria-label="Diminuer" data-action="product#less">−</button>
+                        <input type="number" class="qty form-control" name="quantity" id="quantity" value="1" min="1"
+                            aria-label="Quantité" data-product-target="quantity">
+                        <button type="button" aria-label="Augmenter" data-action="product#more">+</button>
+                    </div>
+                </div>
+
+                <div class="action-row">
+                    <button type="submit" class="btn-primary-b btn-block">Ajouter au panier</button>
+                </div>
+                <input type="hidden" value="{{ csrf_token('add_cart') }}" name="_token">
+            </form>
+
+            <div class="mini-trust">
+                <div class="item"><span class="pastille" style="background:var(--bleu-atelier)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V8l8-5 8 5v13" /><path d="M9 21v-7h6v7" /></svg></span>Cousue à la commande, expédiée sous 7 jours</div>
+                <div class="item"><span class="pastille" style="background:var(--rouge-fil)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="10" rx="1" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg></span>Paiement sécurisé</div>
+                <div class="item"><span class="pastille" style="background:var(--dore)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z" /><circle cx="12" cy="10" r="2.4" /></svg></span>Cousue par {{ sellerName }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ONGLETS -->
+    <div data-controller="navigation">
+        <div class="tabs-nav" data-navigation-target="btnPanel">
+            <button class="active" data-navigation-id-param="tabDesc" data-action="click->navigation#setTab">Description</button>
+            {% if product.tags is not empty %}
+            <button data-navigation-id-param="tabMaterials" data-action="click->navigation#setTab">Matières</button>
+            {% endif %}
+        </div>
+
+        <div class="tab-panel active" id="tabDesc" data-navigation-target="tabPanel">
+            <p>{{ product.description }}</p>
+            <p>Comptez 5 à 7 jours de confection avant expédition.</p>
+        </div>
+
+        {% if product.tags is not empty %}
+        <div class="tab-panel" id="tabMaterials" data-navigation-target="tabPanel">
+            <ul>
+                {% for tag in product.tags %}
+                <li>{{ tag.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- CRÉATRICE -->
+    <div class="creator-spotlight">
+        <span class="avatar-lg">{{ sellerInitials }}</span>
+        <div>
+            <h3>{{ sellerName }}</h3>
+            {% if seller and seller.seller %}
+            <p>{{ seller.seller.description }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if similarProducts is not empty %}
+    <!-- VOUS AIMEREZ AUSSI -->
+    <div class="section-head compact">
+        <h2>Vous aimerez aussi</h2>
+    </div>
+    <div class="row g-4">
+        {% for similar in similarProducts %}
+        <div class="col-sm-6 col-lg-3">
+            <div class="product-card">
+                <a href="{{ path('app_article', { id: similar.id }) }}" class="product-img d-block">
+                    <img src="{{ product_image(similar) }}" alt="" loading="lazy">
+                </a>
+                <div class="product-body">
+                    <a href="{{ path('app_article', { id: similar.id }) }}" class="product-title">{{ similar.name }}</a>
+                    <span class="product-creator">{{ similar.user ? similar.user.displayName }}</span>
+                    <div class="product-footer"><span class="product-price">{{ price_incl_vat(similar)|format_currency('EUR') }}</span></div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</section>
 {% endblock %}

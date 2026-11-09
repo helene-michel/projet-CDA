@@ -2,11 +2,11 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Tags;
+use App\Entity\Tag;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class TagsFixtures extends Fixture
+class TagFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -46,8 +46,8 @@ class TagsFixtures extends Fixture
             'Mi-saison',
         ];
         foreach($tags as $tagName){
-            $tag = new Tags;
-            $tag->setNom($tagName);
+            $tag = new Tag;
+            $tag->setName($tagName);
             $manager->persist($tag);
         }
 

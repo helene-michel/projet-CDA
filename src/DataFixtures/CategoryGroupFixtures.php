@@ -69,11 +69,11 @@ class CategoryGroupFixtures extends Fixture
         ];
         foreach($category as $group=>$cat){
             $categoryGroup = new CategoryGroup;
-            $categoryGroup->setNom($group);
+            $categoryGroup->setName($group);
            
             foreach($cat as $c){
                 $catEntity = new Category;
-                $catEntity->setNom($c);
+                $catEntity->setName($c);
                 $categoryGroup->addCategory($catEntity);
             }
             $manager->persist($categoryGroup);

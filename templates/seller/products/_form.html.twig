@@ -6,43 +6,43 @@
         <div class="col-lg-7 d-flex flex-column gap-4">
             <section class="form-card" aria-labelledby="product-form-infos">
                 <h2 id="product-form-infos">Informations</h2>
-                {{ form_row(form.nom) }}
+                {{ form_row(form.name) }}
                 {{ form_row(form.category) }}
                 {{ form_row(form.description) }}
             </section>
 
             <section class="form-card" aria-labelledby="product-form-photos">
                 <h2 id="product-form-photos">Photos</h2>
-                {% if product.image is not empty %}
+                {% if product.images is not empty %}
                     <p class="form-card__hint">Photos actuelles (les nouvelles photos seront ajoutées à la suite) :</p>
                     <ul class="photo-list">
-                        {% for filename in product.image %}
+                        {% for image in product_images(product) %}
                             <li>
-                                <img src="{{ asset('uploads/productImages/' ~ filename) }}"
-                                     alt="Photo {{ loop.index }} de {{ product.nom }}" width="88" height="88" loading="lazy">
+                                <img src="{{ image }}"
+                                     alt="Photo {{ loop.index }} de {{ product.name }}" width="88" height="88" loading="lazy">
                             </li>
                         {% endfor %}
                     </ul>
                 {% endif %}
-                {{ form_row(form.image, { attr: { 'data-action': 'change->product-form#previewImages' } }) }}
+                {{ form_row(form.images, { attr: { 'data-action': 'change->product-form#previewImages' } }) }}
                 <ul class="photo-list" data-product-form-target="previews" aria-live="polite"></ul>
             </section>
         </div>
 
         <div class="col-lg-5 d-flex flex-column gap-4">
-            <section class="form-card" aria-labelledby="product-form-prix">
-                <h2 id="product-form-prix">Prix</h2>
-                {{ form_row(form.prix_ht, { attr: {
-                    'data-product-form-target': 'ht',
-                    'data-action': 'input->product-form#updateTtc',
+            <section class="form-card" aria-labelledby="product-form-price">
+                <h2 id="product-form-price">Prix</h2>
+                {{ form_row(form.priceExclVat, { attr: {
+                    'data-product-form-target': 'priceExclVat',
+                    'data-action': 'input->product-form#updatePriceInclVat',
                 } }) }}
-                {{ form_row(form.TVA, { attr: {
-                    'data-product-form-target': 'tva',
-                    'data-action': 'change->product-form#updateTtc',
+                {{ form_row(form.vatRate, { attr: {
+                    'data-product-form-target': 'vatRate',
+                    'data-action': 'change->product-form#updatePriceInclVat',
                 } }) }}
                 <p class="ttc-preview">
                     Prix affiché aux clientes :
-                    <strong data-product-form-target="ttc" aria-live="polite">—</strong>
+                    <strong data-product-form-target="priceInclVat" aria-live="polite">—</strong>
                 </p>
             </section>
 

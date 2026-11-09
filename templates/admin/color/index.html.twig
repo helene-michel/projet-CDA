@@ -1,6 +1,6 @@
 {% extends 'admin/adminbase.html.twig' %}
 
-{% block title %}Hello DashboardAdminController!{% endblock %}
+{% block title %}Couleurs{% endblock %}
 
 {% block body %}
 
@@ -24,9 +24,9 @@
 				<h2>Ajouter une couleur</h2>
 				{{ form_start(form, {'attr': {'class': 'color-add-row'}}) }}
 				<div class="field">
-					{{ form_label(form.nom) }}
+					{{ form_label(form.name) }}
 					<div>
-						{{ form_widget(form.nom) }}
+						{{ form_widget(form.name) }}
 					</div>
 				</div>
 				<div class="field">
@@ -35,7 +35,7 @@
 						{{ form_widget(form.code) }}
 					</div>
 				</div>
-				<button type="submit" class="btn-add-color">{{ boutonText }} la couleur</button>
+				<button type="submit" class="btn-add-color">{{ buttonText }} la couleur</button>
 				{{ form_end(form) }}
 			</div>
         
@@ -47,10 +47,10 @@
 					<div class="color-item">
 						<span class="color-swatch" style="background:{{ color.code }}"></span>
 						<div class="meta">
-							<input class="name" value="{{ color.nom }}" aria-label="Nom de la couleur">
+							<span class="name">{{ color.name }}</span>
 						</div>
 						<div class="actions">
-							<form action="{{ path('app_color_delete_admin') }}" method="POST" onsubmit="return confirm('Voulez vous vraiment supprimer la couleur {{ color.nom }}');">
+							<form action="{{ path('app_color_delete_admin') }}" method="POST" onsubmit="return confirm('Voulez vous vraiment supprimer la couleur {{ color.name }}');">
 								<button type='submit' class="delete" aria-label="Supprimer">{{ ux_icon('lucide:trash') }}</button>
 								<input type="hidden" value="{{ csrf_token('color_delete_' ~ color.id) }}" name="_token">
 								<input type="hidden" value="DELETE" name="_method">

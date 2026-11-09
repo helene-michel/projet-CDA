@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\SellerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -9,10 +10,10 @@ use Symfony\Component\Routing\Attribute\Route;
 final class BaseController extends AbstractController
 {
     #[Route('/', name: 'app_base')]
-    public function index(): Response
+    public function index(SellerRepository $sellerRepository): Response
     {
         return $this->render('base/index.html.twig', [
-            'controller_name' => 'BaseController',
+            'sellers' => $sellerRepository->findBy([], ['id' => 'DESC'], 4),
         ]);
     }
 }

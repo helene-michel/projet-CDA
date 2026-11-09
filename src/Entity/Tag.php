@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\TagsRepository;
+use App\Repository\TagRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Ignore;
 
-#[ORM\Entity(repositoryClass: TagsRepository::class)]
-class Tags
+#[ORM\Entity(repositoryClass: TagRepository::class)]
+class Tag
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,12 +17,12 @@ class Tags
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    private ?string $name = null;
 
     /**
-     * @var Collection<int, Products>
+     * @var Collection<int, Product>
      */
-    #[ORM\ManyToMany(targetEntity: Products::class, mappedBy: 'Tags')]
+    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'tags')]
     private Collection $products;
 
     public function __construct()
@@ -35,20 +35,20 @@ class Tags
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->nom;
+        return $this->name;
     }
 
-    public function setNom(string $nom): static
+    public function setName(string $name): static
     {
-        $this->nom = $nom;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Products>
+     * @return Collection<int, Product>
      */
     #[Ignore]
     public function getProducts(): Collection
@@ -56,7 +56,7 @@ class Tags
         return $this->products;
     }
 
-    public function addProduct(Products $product): static
+    public function addProduct(Product $product): static
     {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
@@ -66,7 +66,7 @@ class Tags
         return $this;
     }
 
-    public function removeProduct(Products $product): static
+    public function removeProduct(Product $product): static
     {
         if ($this->products->removeElement($product)) {
             $product->removeTag($this);

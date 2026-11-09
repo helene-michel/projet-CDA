@@ -17,20 +17,20 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    private ?string $name = null;
 
     /**
-     * @var Collection<int, Products>
+     * @var Collection<int, Product>
      */
-    #[ORM\OneToMany(targetEntity: Products::class, mappedBy: 'category')]
-    private Collection $Products;
+    #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'category')]
+    private Collection $products;
 
-    #[ORM\ManyToOne(inversedBy: 'Category')]
+    #[ORM\ManyToOne(inversedBy: 'categories')]
     private ?CategoryGroup $categoryGroup = null;
 
     public function __construct()
     {
-        $this->Products = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -38,41 +38,40 @@ class Category
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->nom;
+        return $this->name;
     }
 
-    public function setNom(string $nom): static
+    public function setName(string $name): static
     {
-        $this->nom = $nom;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Products>
+     * @return Collection<int, Product>
      */
     #[Ignore]
     public function getProducts(): Collection
     {
-        return $this->Products;
+        return $this->products;
     }
 
-    public function addProduct(Products $product): static
+    public function addProduct(Product $product): static
     {
-        if (!$this->Products->contains($product)) {
-            $this->Products->add($product);
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
             $product->setCategory($this);
         }
 
         return $this;
     }
 
-    public function removeProduct(Products $product): static
+    public function removeProduct(Product $product): static
     {
-        if ($this->Products->removeElement($product)) {
-            // set the owning side to null (unless already changed)
+        if ($this->products->removeElement($product)) {
             if ($product->getCategory() === $this) {
                 $product->setCategory(null);
             }

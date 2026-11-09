@@ -2,7 +2,7 @@
 
 namespace App\Twig;
 
-use App\Entity\Products;
+use App\Entity\Product;
 use App\Service\PriceCalculator;
 use Twig\Attribute\AsTwigFunction;
 
@@ -13,11 +13,11 @@ class PriceExtension
     }
 
     /**
-     * Prix TTC (nombre). Pour l'afficher : {{ prix_ttc(produit)|format_currency('EUR') }}.
+     * Prix TTC (nombre). Pour l'afficher : {{ price_incl_vat(produit)|format_currency('EUR') }}.
      */
-    #[AsTwigFunction('prix_ttc')]
-    public function prixTtc(Products $product): float
+    #[AsTwigFunction('price_incl_vat')]
+    public function priceInclVat(Product $product): float
     {
-        return $this->priceCalculator->getPrixTtc($product);
+        return $this->priceCalculator->getPriceInclVat($product);
     }
 }

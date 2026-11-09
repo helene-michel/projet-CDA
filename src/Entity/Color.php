@@ -17,15 +17,15 @@ class Color
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     private ?string $code = null;
 
     /**
-     * @var Collection<int, Products>
+     * @var Collection<int, Product>
      */
-    #[ORM\ManyToMany(targetEntity: Products::class, mappedBy: 'colors')]
+    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'colors')]
     private Collection $products;
 
     public function __construct()
@@ -38,14 +38,14 @@ class Color
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->nom;
+        return $this->name;
     }
 
-    public function setNom(string $nom): static
+    public function setName(string $name): static
     {
-        $this->nom = $nom;
+        $this->name = $name;
 
         return $this;
     }
@@ -63,7 +63,7 @@ class Color
     }
 
     /**
-     * @return Collection<int, Products>
+     * @return Collection<int, Product>
      */
     #[Ignore]
     public function getProducts(): Collection
@@ -71,7 +71,7 @@ class Color
         return $this->products;
     }
 
-    public function addProduct(Products $product): static
+    public function addProduct(Product $product): static
     {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
@@ -81,7 +81,7 @@ class Color
         return $this;
     }
 
-    public function removeProduct(Products $product): static
+    public function removeProduct(Product $product): static
     {
         if ($this->products->removeElement($product)) {
             $product->removeColor($this);

@@ -16,16 +16,16 @@ class Seller
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $SIRET = null;
+    private ?string $siret = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $raison_social = null;
+    private ?string $companyName = null;
 
     #[ORM\OneToOne(inversedBy: 'seller', cascade: ['persist', 'remove'])]
-    private ?User $User = null;
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -34,12 +34,12 @@ class Seller
 
     public function getSiret(): ?string
     {
-        return $this->SIRET;
+        return $this->siret;
     }
 
     public function setSiret(string $siret): static
     {
-        $this->SIRET = $siret;
+        $this->siret = $siret;
 
         return $this;
     }
@@ -56,26 +56,26 @@ class Seller
         return $this;
     }
 
-    public function getRaisonSocial(): ?string
+    public function getCompanyName(): ?string
     {
-        return $this->raison_social;
+        return $this->companyName;
     }
 
-    public function setRaisonSocial(string $raison_social): static
+    public function setCompanyName(string $companyName): static
     {
-        $this->raison_social = $raison_social;
+        $this->companyName = $companyName;
 
         return $this;
     }
     #[Ignore]
     public function getUser(): ?User
     {
-        return $this->User;
+        return $this->user;
     }
 
-    public function setUser(?User $User): static
+    public function setUser(?User $user): static
     {
-        $this->User = $User;
+        $this->user = $user;
 
         return $this;
     }

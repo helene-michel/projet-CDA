@@ -2,9 +2,9 @@
 
 namespace App\Controller\Dashboard;
 
-use App\Entity\Tags;
-use App\Form\TagsType;
-use App\Repository\TagsRepository;
+use App\Entity\Tag;
+use App\Form\TagType;
+use App\Repository\TagRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,18 +15,18 @@ use Symfony\Component\Routing\Attribute\Route;
 final class TagsController extends AbstractController
 {
     #[Route(name: 'app_tags_index', methods: ['GET'])]
-    public function index(TagsRepository $tagsRepository): Response
+    public function index(TagRepository $tagRepository): Response
     {
         return $this->render('admin/tags/index.html.twig', [
-            'tags' => $tagsRepository->findAll(),
+            'tags' => $tagRepository->findAll(),
         ]);
     }
 
     #[Route('/new', name: 'app_tags_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $tag = new Tags();
-        $form = $this->createForm(TagsType::class, $tag);
+        $tag = new Tag();
+        $form = $this->createForm(TagType::class, $tag);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -43,7 +43,7 @@ final class TagsController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_tags_show', methods: ['GET'])]
-    public function show(Tags $tag): Response
+    public function show(Tag $tag): Response
     {
         return $this->render('admin/tags/show.html.twig', [
             'tag' => $tag,
@@ -51,9 +51,9 @@ final class TagsController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_tags_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Tags $tag, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Tag $tag, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(TagsType::class, $tag);
+        $form = $this->createForm(TagType::class, $tag);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -69,7 +69,7 @@ final class TagsController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_tags_delete', methods: ['POST'])]
-    public function delete(Request $request, Tags $tag, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Tag $tag, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$tag->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($tag);

@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Products;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Product;
+use App\Service\Cart;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,36 +12,38 @@ use Symfony\Component\Security\Http\Attribute\IsCsrfTokenValid;
 
 final class CartController extends AbstractController
 {
-    #[Route('/cart', name: 'app_cart')]
-    public function index(): Response
+    #[Route('/cart', name: 'app_cart', methods: ['GET'])]
+    public function index(Cart $cart): Response
     {
+        $lines = $cart->getLines();
+
         return $this->render('cart/index.html.twig', [
-            'controller_name' => 'CartController',
+            'lines' => $lines,
+            'total' => array_sum(array_column($lines, 'total')),
         ]);
     }
 
-    #[Route('/cart/add/{id}', name: 'app_cart_add')]
+    #[Route('/cart/add/{id}', name: 'app_cart_add', methods: ['POST'])]
     #[IsCsrfTokenValid('add_cart')]
-    public function add(
-        EntityManagerInterface $em, 
-        Request $request,
-        Products $products
-        ): Response
+    public function add(Product $product, Request $request, Cart $cart): Response
     {
+        $cart->add(
+            $product,
+            $request->request->getString('size') ?: null,
+            $request->request->getInt('color') ?: null,
+            $request->request->getInt('quantity', 1),
+        );
+        $this->addFlash('success', 'Votre article a bien été ajouté au panier.');
 
-        $cart = [
-            "produit"=>$products,
-            "taille"=>$request->request->get("taille"),
-            "couleur"=>$request->request->get("color"),
-            "quantite"=>$request->request->get("number")
-        ];
-        $this->addFlash('success', 'Votre article à bien été ajouté au panier.');
-        $session = $request->getSession();
-        $cartSession = $session->get('cart') ?? [];
-        array_push($cartSession,$cart);
+        return $this->redirectToRoute('app_article', ['id' => $product->getId()]);
+    }
 
-        $session->set('cart', $cartSession);
-        
-        return $this->redirectToRoute('app_article', ['id'=>$products->getId()]);
+    #[Route('/cart/remove/{index}', name: 'app_cart_remove', methods: ['POST'], requirements: ['index' => '\d+'])]
+    #[IsCsrfTokenValid('remove_cart')]
+    public function remove(int $index, Cart $cart): Response
+    {
+        $cart->remove($index);
+
+        return $this->redirectToRoute('app_cart');
     }
 }

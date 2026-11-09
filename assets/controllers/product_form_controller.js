@@ -2,38 +2,31 @@ import { Controller } from '@hotwired/stimulus';
 
 // Même rendu que format_currency('EUR') côté Twig : "91,20 €"
 const priceFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
-const MAX_IMAGE_SIZE = 1024 * 1024; // identique à la contrainte Image(maxSize: '1024k')
+const MAX_IMAGE_SIZE = 1024 * 1024; // same as Image(maxSize: '1024k')
 
-/*
- * Formulaire produit (espace vendeur) :
- *  - aperçu du prix TTC pendant la saisie (le calcul de référence reste PriceCalculator côté serveur) ;
- *  - aperçu des photos sélectionnées, avec alerte si une photo dépasse 1 Mo.
- */
+// Seller product form: price incl. VAT preview + photo previews
 export default class extends Controller {
-    static targets = ['ht', 'tva', 'ttc', 'previews'];
+    static targets = ['priceExclVat', 'vatRate', 'priceInclVat', 'previews'];
 
     connect() {
         this.objectUrls = [];
-        this.updateTtc();
+        this.updatePriceInclVat();
     }
 
     disconnect() {
         this.revokePreviews();
     }
 
-    updateTtc() {
-        if (!this.hasHtTarget || !this.hasTvaTarget || !this.hasTtcTarget) {
-            return;
-        }
-        const ht = parseFloat(this.htTarget.value.replace(',', '.'));
-        const rate = parseFloat(this.tvaTarget.selectedOptions[0]?.dataset.rate);
+    updatePriceInclVat() {
+        const priceExclVat = parseFloat(this.priceExclVatTarget.value.replace(',', '.'));
+        const vatRate = parseFloat(this.vatRateTarget.selectedOptions[0]?.dataset.rate);
 
-        if (!Number.isFinite(ht) || ht <= 0 || !Number.isFinite(rate)) {
-            this.ttcTarget.textContent = '—';
+        if (!Number.isFinite(priceExclVat) || priceExclVat <= 0 || !Number.isFinite(vatRate)) {
+            this.priceInclVatTarget.textContent = '—';
             return;
         }
-        const ttc = Math.round((ht * (1 + rate / 100) + Number.EPSILON) * 100) / 100;
-        this.ttcTarget.textContent = `${priceFormatter.format(ttc)} TTC`;
+        const priceInclVat = Math.round((priceExclVat * (1 + vatRate / 100) + Number.EPSILON) * 100) / 100;
+        this.priceInclVatTarget.textContent = `${priceFormatter.format(priceInclVat)} TTC`;
     }
 
     previewImages(event) {

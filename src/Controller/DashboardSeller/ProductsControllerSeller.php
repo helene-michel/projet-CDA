@@ -2,13 +2,13 @@
 
 namespace App\Controller\DashboardSeller;
 
-use App\Entity\Products;
+use App\Entity\Product;
 use App\Entity\User;
 use App\Security\Voter\ProductVoter;
-use App\Form\ProductsType;
+use App\Form\ProductType;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
-use App\Repository\ProductsRepository;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,11 +24,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class ProductsControllerSeller extends AbstractController
 {
     #[Route(name: 'app_products_index', methods: ['GET'])]
-    public function index(ProductsRepository $productsRepository, #[CurrentUser] User $user): Response
+    public function index(ProductRepository $productRepository, #[CurrentUser] User $user): Response
     {
-        // Uniquement les produits du vendeur connecté (et non tout le catalogue).
         return $this->render('seller/products/index.html.twig', [
-            'products' => $productsRepository->findBy(['user' => $user], ['id' => 'DESC']),
+            'products' => $productRepository->findBy(['user' => $user], ['id' => 'DESC']),
         ]);
     }
 
@@ -39,19 +38,18 @@ final class ProductsControllerSeller extends AbstractController
         FileUploader $fileUploader,
         #[CurrentUser] User $user,
     ): Response {
-        $product = (new Products())->setUser($user)->setTVA(20.0);
-        $form = $this->createForm(ProductsType::class, $product);
+        $product = (new Product())->setUser($user)->setVatRate(20.0);
+        $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid() && $this->uploadImages($form, $product, $fileUploader)) {
             $entityManager->persist($product);
             $entityManager->flush();
-            $this->addFlash('success', sprintf('Le produit « %s » a été créé.', $product->getNom()));
+            $this->addFlash('success', sprintf('Le produit « %s » a été créé.', $product->getName()));
 
             return $this->redirectToRoute('seller_app_products_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        // Formulaire invalide : render() renvoie automatiquement un statut 422 (requis par Turbo).
         return $this->render('seller/products/new.html.twig', [
             'product' => $product,
             'form' => $form,
@@ -60,7 +58,7 @@ final class ProductsControllerSeller extends AbstractController
 
     #[Route('/{id}', name: 'app_products_show', methods: ['GET'])]
     #[IsGranted(ProductVoter::MANAGE, 'product')]
-    public function show(Products $product): Response
+    public function show(Product $product): Response
     {
         return $this->render('seller/products/show.html.twig', [
             'product' => $product,
@@ -71,16 +69,16 @@ final class ProductsControllerSeller extends AbstractController
     #[IsGranted(ProductVoter::MANAGE, 'product')]
     public function edit(
         Request $request,
-        Products $product,
+        Product $product,
         EntityManagerInterface $entityManager,
         FileUploader $fileUploader,
     ): Response {
-        $form = $this->createForm(ProductsType::class, $product);
+        $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid() && $this->uploadImages($form, $product, $fileUploader)) {
             $entityManager->flush();
-            $this->addFlash('success', sprintf('Le produit « %s » a été modifié.', $product->getNom()));
+            $this->addFlash('success', sprintf('Le produit « %s » a été modifié.', $product->getName()));
 
             return $this->redirectToRoute('seller_app_products_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -93,12 +91,12 @@ final class ProductsControllerSeller extends AbstractController
 
     #[Route('/{id}', name: 'app_products_delete', methods: ['POST'])]
     #[IsGranted(ProductVoter::MANAGE, 'product')]
-    public function delete(Request $request, Products $product, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($product);
             $entityManager->flush();
-            $this->addFlash('success', sprintf('Le produit « %s » a été supprimé.', $product->getNom()));
+            $this->addFlash('success', sprintf('Le produit « %s » a été supprimé.', $product->getName()));
         } else {
             $this->addFlash('error', 'La suppression a échoué, veuillez réessayer.');
         }
@@ -106,23 +104,15 @@ final class ProductsControllerSeller extends AbstractController
         return $this->redirectToRoute('seller_app_products_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    /**
-     * Enregistre les photos envoyées et les ajoute à celles du produit.
-     * Retourne false (avec une erreur sur le champ) si un fichier n'a pas pu être enregistré.
-     */
-    private function uploadImages(FormInterface $form, Products $product, FileUploader $fileUploader): bool
+    private function uploadImages(FormInterface $form, Product $product, FileUploader $fileUploader): bool
     {
-        $filenames = $product->getImage() ?? [];
         try {
-            foreach ($form->get('image')->getData() ?? [] as $imageFile) {
-                $filenames[] = $fileUploader->upload($imageFile);
-            }
+            $fileUploader->addProductImages($product, $form->get('images')->getData() ?? []);
         } catch (FileException) {
-            $form->get('image')->addError(new FormError('Une photo n\'a pas pu être enregistrée, veuillez réessayer.'));
+            $form->get('images')->addError(new FormError('Une photo n\'a pas pu être enregistrée, veuillez réessayer.'));
 
             return false;
         }
-        $product->setImage($filenames);
 
         return true;
     }

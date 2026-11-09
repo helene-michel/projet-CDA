@@ -1,9 +1,9 @@
 {# Variables : product ; compact (optionnel) = bouton icône pour la liste #}
 <form method="post" action="{{ path('seller_app_products_delete', { id: product.id }) }}" class="d-inline"
-      data-turbo-confirm="Supprimer définitivement « {{ product.nom }} » ? Cette action est irréversible.">
+      data-turbo-confirm="Supprimer définitivement « {{ product.name }} » ? Cette action est irréversible.">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ product.id) }}">
     {% if compact|default(false) %}
-        <button type="submit" class="delete" aria-label="Supprimer « {{ product.nom }} »" title="Supprimer">
+        <button type="submit" class="delete" aria-label="Supprimer « {{ product.name }} »" title="Supprimer">
             {{ ux_icon('lucide:trash', { 'aria-hidden': 'true' }) }}
         </button>
     {% else %}

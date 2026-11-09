@@ -146,17 +146,24 @@ input:focus-visible {
 .brand-mark svg {
     flex-shrink: 0;
 }
-.nav-links a {
+.nav-links a,
+.nav-links button {
+    display: inline-block;
+    background: none;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    font-family: var(--sans);
+    line-height: 1.5;
     font-size: 0.94rem;
     color: var(--encre);
     padding: 0.4rem 0.1rem;
     margin: 0 0.85rem;
-    border-bottom: 2px solid transparent;
     transition:
         border-color 0.15s ease,
         color 0.15s ease;
 }
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-links button:hover {
     border-bottom-color: var(--rouge-fil);
     color: var(--bleu-atelier-dark);
 }
@@ -176,6 +183,26 @@ input:focus-visible {
     font-size: 0.9rem;
     width: 100%;
     font-family: var(--sans);
+}
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.nav-logout {
+    font-size: 0.85rem;
+    color: #5b6472;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--sable);
+}
+.nav-logout:hover {
+    color: var(--rouge-fil);
+}
+@media (max-width: 991.98px) {
+    .nav-actions {
+        flex-wrap: wrap;
+        margin: 1rem 0 0.5rem;
+    }
 }
 .icon-btn {
     width: 38px;
@@ -490,6 +517,72 @@ input:focus-visible {
         grid-column: 1/3;
         grid-row: 3/4;
     }
+}
+
+/* ---------- nos créations ---------- */
+.collection-card {
+    background: #fff;
+    border: 1px solid var(--sable);
+    border-radius: var(--radius);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.collection-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 28px rgba(35, 42, 52, 0.12);
+}
+.collection-head {
+    --accent: var(--bleu-atelier);
+    position: relative;
+    background-color: var(--accent);
+    background-image:
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.08) 0 2px, transparent 2px 7px),
+        repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.06) 0 2px, transparent 2px 7px);
+    color: #fff;
+    padding: 1.4rem 1.3rem 1.2rem;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+.col-sm-6:nth-child(4n + 2) .collection-head { --accent: var(--rouge-fil); }
+.col-sm-6:nth-child(4n + 3) .collection-head { --accent: var(--dore); }
+.col-sm-6:nth-child(4n + 4) .collection-head { --accent: var(--bleu-atelier-dark); }
+.collection-head h3 {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+    margin: 0;
+    color: #fff;
+}
+.collection-head span {
+    font-size: 0.8rem;
+    opacity: 0.85;
+}
+.collection-links {
+    list-style: none;
+    margin: 0;
+    padding: 1.1rem 1.2rem 1.3rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+.collection-links a {
+    display: inline-block;
+    font-size: 0.82rem;
+    color: var(--encre);
+    background: var(--ivoire);
+    border: 1px solid var(--sable);
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.collection-links a:hover {
+    background: var(--bleu-atelier);
+    border-color: var(--bleu-atelier);
+    color: #fff;
 }
 
 /* ---------- ateliers ---------- */
@@ -1024,6 +1117,15 @@ footer a:hover {
     position: absolute;
     inset: 0;
 }
+.product-img > img,
+.gallery-main > img,
+.thumb > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 .product-img .fav {
     position: absolute;
     top: 0.7rem;
@@ -1242,6 +1344,10 @@ footer a:hover {
     border: 2px solid transparent;
     transition: border-color 0.15s ease;
     flex-shrink: 0;
+}
+button.thumb {
+    padding: 0;
+    background: none;
 }
 .thumb.active {
     border-color: var(--bleu-atelier);

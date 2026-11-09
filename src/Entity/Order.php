@@ -15,21 +15,21 @@ class Order
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $date_commande = null;
+    private ?\DateTimeImmutable $orderedAt = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDateCommande(): ?\DateTimeImmutable
+    public function getOrderedAt(): ?\DateTimeImmutable
     {
-        return $this->date_commande;
+        return $this->orderedAt;
     }
 
-    public function setDateCommande(\DateTimeImmutable $date_commande): static
+    public function setOrderedAt(\DateTimeImmutable $orderedAt): static
     {
-        $this->date_commande = $date_commande;
+        $this->orderedAt = $orderedAt;
 
         return $this;
     }

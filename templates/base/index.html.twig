@@ -103,6 +103,32 @@
     </div>
 </section>
 
+<section class="py-5" id="categories">
+    <div class="container-xxl">
+        <div class="section-head">
+            <h2>Nos créations</h2>
+            <p>Vêtements et accessoires cousus main, rangés par univers.</p>
+        </div>
+        <div class="row g-4">
+            {% for group in category_groups() %}
+            <div class="col-sm-6 col-lg-3">
+                <div class="collection-card">
+                    <div class="collection-head">
+                        <h3>{{ group.name }}</h3>
+                        <span>{{ group.categories|length }} catégorie{{ group.categories|length > 1 ? 's' }}</span>
+                    </div>
+                    <ul class="collection-links">
+                        {% for category in group.categories %}
+                        <li><a href="{{ path('app_articles', { id: category.id }) }}">{{ category.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
 <section class="py-5 mt-2 mb-4" style="background:var(--ivoire-dark)" id="ateliers">
     <div class="container-xxl py-4">
         <div class="section-head">
@@ -111,38 +137,15 @@
         </div>
 
         <div class="row g-3">
+            {% for seller in sellers %}
             <div class="col-sm-6 col-lg-3">
                 <div class="atelier-card">
-                    <div class="avatar">FL</div>
-                    <div class="region">Bretagne</div>
-                    <h3>Atelier Fleur de Lin</h3>
-                    <p>Robes et jupes en lin, coupées et cousues à Rennes.</p>
+                    <div class="avatar">{{ seller.companyName|split(' ')|slice(0, 2)|map(word => word|first|upper)|join }}</div>
+                    <h3>{{ seller.companyName }}</h3>
+                    <p>{{ seller.description|length > 90 ? seller.description|slice(0, 89) ~ '…' : seller.description }}</p>
                 </div>
             </div>
-            <div class="col-sm-6 col-lg-3">
-                <div class="atelier-card">
-                    <div class="avatar">MV</div>
-                    <div class="region">Lyon</div>
-                    <h3>La Maison Vermillon</h3>
-                    <p>Foulards et soieries teints à la main, pièces limitées.</p>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-                <div class="atelier-card">
-                    <div class="avatar">CE</div>
-                    <div class="region">Provence</div>
-                    <h3>Cousu Main par Élise</h3>
-                    <p>Linge de maison et accessoires en coton et lin naturel.</p>
-                </div>
-            </div>
-            <div class="col-sm-6 col-lg-3">
-                <div class="atelier-card">
-                    <div class="avatar">EB</div>
-                    <div class="region">Alsace</div>
-                    <h3>L'Échoppe à Boutons</h3>
-                    <p>Mercerie fine et boutons anciens, sélectionnés à la pièce.</p>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -174,50 +177,6 @@
     </div>
 </section>
 
-<!-- ===================== FOOTER ===================== -->
-<footer>
-    <div class="container-xxl">
-        <div class="row gy-4">
-            <div class="col-lg-4">
-                <div class="brand-mark mb-3">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.6">
-                        <circle cx="12" cy="12" r="7" />
-                        <path d="M12 5c-2 2-2 12 0 14M12 5c2 2 2 12 0 14M5 12h14" />
-                    </svg>
-                    Le comptoire des coutiriers
-                </div>
-                <p style="max-width:32ch;">Le marketplace de la couture française : créations cousus par des artisanes
-                    près de chez vous.</p>
-            </div>
-            <div class="col-6 col-lg-2">
-                <h6>Acheter</h6>
-                <a href="#">Vêtements</a>
 
-
-            </div>
-            <div class="col-6 col-lg-2">
-                <h6>Vendre</h6>
-                <a href="#">Devenir créatrice</a>
-
-            </div>
-            <div class="col-6 col-lg-2">
-                <h6>Aide</h6>
-                <a href="#">Livraison</a>
-                <a href="#">Retours</a>
-                <a href="#">Contact</a>
-            </div>
-            <div class="col-6 col-lg-2">
-                <h6>Le comptoire des coutiriers</h6>
-                <a href="#">À propos</a>
-                <a href="#">Mentions légales</a>
-            </div>
-        </div>
-        <div class="footer-bottom d-flex flex-wrap justify-content-between">
-            <span>© 2026 Le comptoire des coutiriers — tous droits réservés</span>
-            <span>Fait en France</span>
-        </div>
-    </div>
-</footer>
 
 {% endblock %}

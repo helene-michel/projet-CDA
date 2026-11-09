@@ -1,34 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Products{% endblock %}
+{% block title %}{{ product.name }}{% endblock %}
 
 {% block body %}
-    <h1>Products</h1>
+<main class="seller-page container-xxl py-4 py-lg-5">
+    <nav class="breadcrumb-simple" aria-label="Fil d'Ariane">
+        <a href="{{ path('seller_app_dashboard_seller_dashboard_seller') }}">Espace vendeur</a> /
+        <a href="{{ path('seller_app_products_index') }}">Mes produits</a> /
+        <span aria-current="page">{{ product.name }}</span>
+    </nav>
 
-    <table class="table">
+    <header class="seller-head">
+        <h1>{{ product.name }}</h1>
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_article', { id: product.id }) }}" class="btn-outline-b">Voir en boutique</a>
+            <a href="{{ path('seller_app_products_edit', { id: product.id }) }}" class="btn-primary-b">Modifier</a>
+        </div>
+    </header>
+
+    <ul class="photo-list">
+        {% for image in product_images(product) %}
+        <li><img src="{{ image }}" alt="" width="88" height="88" loading="lazy"></li>
+        {% endfor %}
+    </ul>
+
+    <table class="table mt-3">
         <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ product.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ product.nom }}</td>
-            </tr>
-            <tr>
-                <th>Prix_ht</th>
-                <td>{{ product.prixHt }}</td>
-            </tr>
-            <tr>
-                <th>TVA</th>
-                <td>{{ product.TVA }}</td>
-            </tr>
+            <tr><th scope="row">Catégorie</th><td>{{ product.category ? product.category.name : '—' }}</td></tr>
+            <tr><th scope="row">Prix HT</th><td>{{ product.priceExclVat|format_currency('EUR') }}</td></tr>
+            <tr><th scope="row">TVA</th><td>{{ product.vatRate|format_number }} %</td></tr>
+            <tr><th scope="row">Prix TTC</th><td>{{ price_incl_vat(product)|format_currency('EUR') }}</td></tr>
+            <tr><th scope="row">Coloris</th><td>{{ product.colors|map(color => color.name)|join(', ') ?: '—' }}</td></tr>
+            <tr><th scope="row">Description</th><td>{{ product.description }}</td></tr>
         </tbody>
     </table>
 
-    <a href="{{ path('seller_app_products_index') }}">back to list</a>
-
-    <a href="{{ path('seller_app_products_edit', {'id': product.id}) }}">{{ ux_icon('lucide:pencil') }}</a>
-
     {{ include('seller/products/_delete_form.html.twig') }}
+</main>
 {% endblock %}

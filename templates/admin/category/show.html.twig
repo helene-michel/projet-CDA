@@ -1,9 +1,11 @@
 {% extends 'admin/adminbase.html.twig' %}
 
-{% block title %}Category{% endblock %}
+{% block title %}Catégorie{% endblock %}
 
 {% block body %}
-    <h1>Category</h1>
+<div class="main-area col-12">
+    <div class="content">
+    <h1>Catégorie</h1>
 
     <table class="table">
         <tbody>
@@ -13,14 +15,16 @@
             </tr>
             <tr>
                 <th>Nom</th>
-                <td>{{ category.nom }}</td>
+                <td>{{ category.name }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('admin_app_category_index') }}">back to list</a>
+    <a href="{{ path('admin_app_category_index') }}">Retour à la liste</a>
 
     <a href="{{ path('admin_app_category_edit', {'id': category.id}) }}">{{ ux_icon('lucide:pencil') }}</a>
 
     {{ include('admin/category/_delete_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}

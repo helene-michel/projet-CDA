@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class SecurityControllerTest extends WebTestCase
 {
-    use CreatesProductsTrait;
+    use CreatesProductTrait;
 
     public function testLoginErrorIsDisplayedAsNotification(): void
     {
@@ -40,7 +40,7 @@ class SecurityControllerTest extends WebTestCase
     public function testLoggedInUserSeesWhoIsConnectedInsteadOfTheForm(): void
     {
         $client = static::createClient();
-        $user = $this->createUser(prenom: 'Flora');
+        $user = $this->createUser(firstName: 'Flora');
         $client->loginUser($user);
 
         $client->request('GET', '/login');
@@ -52,13 +52,13 @@ class SecurityControllerTest extends WebTestCase
         self::assertSelectorExists('a[href="/"]');
         self::assertSelectorNotExists('input[name="_password"]');
         self::assertAnySelectorTextNotContains('body', 'You are logged in');
-        self::assertSelectorExists('nav a.icon-btn.is-connected[aria-label="Mon compte, connecté en tant que Flora"]');
+        self::assertSelectorExists('nav .icon-btn.is-connected[title="Mon compte, connecté en tant que Flora Lefèvre"]');
     }
 
     public function testLoggedInUserWithoutFirstNameSeesEmail(): void
     {
         $client = static::createClient();
-        $user = $this->createUser(prenom: null);
+        $user = $this->createUser(firstName: null);
         $client->loginUser($user);
 
         $client->request('GET', '/login');

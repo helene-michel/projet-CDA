@@ -3,7 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Category;
-use App\Entity\Products;
+use App\Entity\Product;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
  * Crée des produits en base de test et les supprime après chaque test
  * (pas de DAMA/transactions dans ce projet).
  */
-trait CreatesProductsTrait
+trait CreatesProductTrait
 {
     /** @var object[] */
     private array $created = [];
@@ -35,18 +35,18 @@ trait CreatesProductsTrait
         static::ensureKernelShutdown();
     }
 
-    private function createProduct(string $nom = 'Robe "Camille" & co', float $prixHt = 89.5, float $tva = 20, ?User $owner = null, ?Category $category = null): Products
+    private function createProduct(string $name = 'Robe "Camille" & co', float $priceExclVat = 89.5, float $vatRate = 20, ?User $owner = null, ?Category $category = null): Product
     {
         $em = static::getContainer()->get(EntityManagerInterface::class);
         $user = $owner ? $em->find(User::class, $owner->getId()) : $this->createUser();
         $newCategory = null === $category;
-        $category = $newCategory ? (new Category())->setNom('Robes') : $em->find(Category::class, $category->getId());
-        $product = (new Products())
-            ->setNom($nom)
+        $category = $newCategory ? (new Category())->setName('Robes') : $em->find(Category::class, $category->getId());
+        $product = (new Product())
+            ->setName($name)
             ->setDescription(str_repeat('<b>Lin</b> lavé, coupe ample. ', 20))
-            ->setPrixHt($prixHt)
-            ->setTVA($tva)
-            ->setImage([])
+            ->setPriceExclVat($priceExclVat)
+            ->setVatRate($vatRate)
+            ->setImages([])
             ->setCategory($category)
             ->setUser($user);
 
@@ -59,16 +59,16 @@ trait CreatesProductsTrait
         return $product;
     }
 
-    private function createUser(?string $prenom = 'Flora', array $roles = []): User
+    private function createUser(?string $firstName = 'Flora', array $roles = []): User
     {
         $em = static::getContainer()->get(EntityManagerInterface::class);
         $user = (new User())
             ->setEmail(uniqid('test-').'@example.com')
             ->setPassword('x')
-            ->setNom('Lefèvre')
+            ->setLastName('Lefèvre')
             ->setRoles($roles);
-        if (null !== $prenom) {
-            $user->setPrenom($prenom);
+        if (null !== $firstName) {
+            $user->setFirstName($firstName);
         }
         $em->persist($user);
         $em->flush();
@@ -77,10 +77,10 @@ trait CreatesProductsTrait
         return $user;
     }
 
-    private function createCategory(string $nom = 'Robes'): Category
+    private function createCategory(string $name = 'Robes'): Category
     {
         $em = static::getContainer()->get(EntityManagerInterface::class);
-        $category = (new Category())->setNom($nom);
+        $category = (new Category())->setName($name);
         $em->persist($category);
         $em->flush();
         $this->created[] = $category;

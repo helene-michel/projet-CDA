@@ -6,12 +6,15 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[UniqueEntity('email', message: 'Un compte existe déjà avec cette adresse email.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     const ROLES = ["ROLE_USER", "ROLE_SELLER", "ROLE_ADMIN"];
@@ -22,12 +25,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $nom = null;
+    private ?string $lastName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $prenom = null;
+    private ?string $firstName = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
     private ?string $email = null;
 
 
@@ -47,23 +52,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private bool $isVerified = false;
 
     /**
-     * @var Collection<int, Adress>
+     * @var Collection<int, Address>
      */
-    #[ORM\OneToMany(targetEntity: Adress::class, mappedBy: 'user', cascade:['persist', 'remove'])]
-    private Collection $adresse;
+    #[ORM\OneToMany(targetEntity: Address::class, mappedBy: 'user', cascade:['persist', 'remove'])]
+    private Collection $addresses;
 
     /**
-     * @var Collection<int, Products>
+     * @var Collection<int, Product>
      */
-    #[ORM\OneToMany(targetEntity: Products::class, mappedBy: 'user', cascade:['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'user', cascade:['persist', 'remove'])]
     private Collection $products;
 
-    #[ORM\OneToOne(mappedBy: 'User',  cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'user',  cascade: ['persist', 'remove'])]
     private ?Seller $seller = null;
 
     public function __construct()
     {
-        $this->adresse = new ArrayCollection();
+        $this->addresses = new ArrayCollection();
         $this->products = new ArrayCollection();
     }
 
@@ -74,30 +79,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-     public function getNom(): ?string
+     public function getLastName(): ?string
     {
-        return $this->nom;
+        return $this->lastName;
     }
 
-    public function setNom(string $nom): static
+    public function setLastName(?string $lastName): static
     {
-        $this->nom = $nom;
+        $this->lastName = $lastName;
 
         return $this;
     }
 
-    public function getPrenom(): ?string
+    public function getFirstName(): ?string
     {
-        return $this->prenom;
+        return $this->firstName;
     }
 
-    public function setPrenom(string $prenom): static
+    public function setFirstName(?string $firstName): static
     {
-        $this->prenom = $prenom;
+        $this->firstName = $firstName;
 
         return $this;
     }
 
+
+    public function getDisplayName(): string
+    {
+        return trim($this->firstName.' '.$this->lastName) ?: (string) $this->email;
+    }
 
     public function getEmail(): ?string
     {
@@ -177,30 +187,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Adress>
+     * @return Collection<int, Address>
      */
     #[Ignore]
-    public function getAdresse(): Collection
+    public function getAddresses(): Collection
     {
-        return $this->adresse;
+        return $this->addresses;
     }
 
-    public function addAdresse(Adress $adresse): static
+    public function addAddress(Address $address): static
     {
-        if (!$this->adresse->contains($adresse)) {
-            $this->adresse->add($adresse);
-            $adresse->setUser($this);
+        if (!$this->addresses->contains($address)) {
+            $this->addresses->add($address);
+            $address->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeAdresse(Adress $adresse): static
+    public function removeAddress(Address $address): static
     {
-        if ($this->adresse->removeElement($adresse)) {
-            // set the owning side to null (unless already changed)
-            if ($adresse->getUser() === $this) {
-                $adresse->setUser(null);
+        if ($this->addresses->removeElement($address)) {
+            if ($address->getUser() === $this) {
+                $address->setUser(null);
             }
         }
 
@@ -208,7 +217,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Products>
+     * @return Collection<int, Product>
      */
     #[Ignore]
     public function getProducts(): Collection
@@ -216,7 +225,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->products;
     }
 
-    public function addProduct(Products $product): static
+    public function addProduct(Product $product): static
     {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
@@ -226,10 +235,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeProduct(Products $product): static
+    public function removeProduct(Product $product): static
     {
         if ($this->products->removeElement($product)) {
-            // set the owning side to null (unless already changed)
             if ($product->getUser() === $this) {
                 $product->setUser(null);
             }
@@ -245,12 +253,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setSeller(?Seller $seller): static
     {
-        // unset the owning side of the relation if necessary
         if ($seller === null && $this->seller !== null) {
             $this->seller->setUser(null);
         }
 
-        // set the owning side of the relation if necessary
         if ($seller !== null && $seller->getUser() !== $this) {
             $seller->setUser($this);
         }

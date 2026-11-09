@@ -1,9 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Visuelle de vos produits{% endblock %}
+{% block title %}Espace vendeur{% endblock %}
 
 {% block body %}
-<ul>
-<li><a href='{{ path('seller_app_products_index') }}'>Produits</a></li>
-</ul>
+<main class="seller-page container-xxl py-4 py-lg-5">
+    <header class="seller-head">
+        <div>
+            <h1>Bonjour {{ app.user.displayName }}</h1>
+            <p class="results-count mb-0">{{ productCount }} produit{{ productCount > 1 ? 's' }} en vente</p>
+        </div>
+    </header>
+
+    <div class="d-flex flex-wrap gap-3">
+        <a href="{{ path('seller_app_products_index') }}" class="btn-outline-b">Voir mes produits</a>
+        <a href="{{ path('seller_app_products_new') }}" class="btn-primary-b">
+            {{ ux_icon('lucide:plus', { 'aria-hidden': 'true' }) }} Ajouter un produit
+        </a>
+    </div>
+</main>
 {% endblock %}

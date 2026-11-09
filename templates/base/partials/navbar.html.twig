@@ -14,22 +14,14 @@
     <div class="collapse navbar-collapse" id="navlcdc">
       <ul class="navbar-nav nav-links mx-auto mt-3 mt-lg-0">
         <li class="nav-item">
-          <a data-action="click->menu#show" class="">Articles</a>
+          <button type="button" data-action="menu#show" aria-haspopup="true">Créations</button>
         </li>
-        <li class="nav-item"><a href="#ateliers">Créatrices</a></li>
+        <li class="nav-item"><a href="{{ path('app_base') }}#ateliers">Créatrices</a></li>
       </ul>
 
-      <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-        {% if app.user %}
-        {% set account_label = 'Mon compte, connecté en tant que ' ~ (app.user.prenom ?: app.user.userIdentifier) %}
-        <a href="{{ path('app_login') }}" class="icon-btn is-connected" aria-label="{{ account_label }}"
-          title="{{ account_label }}">
-          {{ ux_icon('lucide:user-round-check', { 'aria-hidden': 'true' }) }}
-        </a>
-        {% else %}
-        <a href="{{ path('app_login') }}" class="icon-btn" aria-label="Se connecter" title="Se connecter">
-          {{ ux_icon('lucide:user-round', { 'aria-hidden': 'true' }) }}
-        </a>
+      <div class="nav-actions">
+        {% if not is_granted('ROLE_SELLER') %}
+        <a href="{{ path('app_register') }}" class="btn-vendre">Commencer à vendre</a>
         {% endif %}
         {% set cart_items = cart_count() %}
         {% set cart_label = cart_items > 0
@@ -46,23 +38,40 @@
           <span class="cart-btn__count" aria-hidden="true">{{ cart_items > 99 ? '99+' : cart_items }}</span>
           {% endif %}
         </a>
-        <a href="#" class="btn-vendre">Commencer à vendre</a>
+        {% if app.user %}
+        {% set account_route = is_granted('ROLE_ADMIN') ? 'admin_dashboard' : (is_granted('ROLE_SELLER') ? 'seller_app_dashboard_seller_dashboard_seller' : null) %}
+        {% set account_label = 'Mon compte, connecté en tant que ' ~ app.user.displayName %}
+        {% if account_route %}
+        <a href="{{ path(account_route) }}" class="icon-btn is-connected" aria-label="{{ account_label }}" title="{{ account_label }}">
+          {{ ux_icon('lucide:user-round-check', { 'aria-hidden': 'true' }) }}
+        </a>
+        {% else %}
+        <span class="icon-btn is-connected" title="{{ account_label }}">
+          {{ ux_icon('lucide:user-round-check', { 'aria-label': account_label }) }}
+        </span>
+        {% endif %}
+        <a href="{{ path('app_logout') }}" class="nav-logout">Se déconnecter</a>
+        {% else %}
+        <a href="{{ path('app_login') }}" class="icon-btn" aria-label="Se connecter" title="Se connecter">
+          {{ ux_icon('lucide:user-round', { 'aria-hidden': 'true' }) }}
+        </a>
+        {% endif %}
       </div>
     </div>
   </div>
   <div class="mega-menu hidden" data-menu-target="megaMenu">
     <div class="row g-4">
-      {% for catGroup in getGroup() %}
+      {% for catGroup in category_groups() %}
       <div class="col-lg-3 mega-col">
 
         <h6><span class="ic" style="background:var(--rouge-fil)">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M6 4h12l-1 6-3 2 3 2-1 6H6l-1-6 3-2-3-2z" />
             </svg>
-          </span>{{catGroup.nom}}
+          </span>{{catGroup.name}}
         </h6>
-        {% for cat in catGroup.category %}
-        <a href="{{ path('app_articles', {id:cat.id}) }}">{{ cat.nom }}</a>
+        {% for cat in catGroup.categories %}
+        <a href="{{ path('app_articles', {id:cat.id}) }}">{{ cat.name }}</a>
         {% endfor %}
       </div>
       {% endfor %}
@@ -70,7 +79,7 @@
     </div>
     <div class="mega-promo">
       <div>
-        <strong>Le vestiaire bambin arrive sur Le comptoire des coutiriers</strong>
+        <strong>Le vestiaire bambin arrive sur Le comptoire des couturiers</strong>
         <p>Petites séries cousues à la main, en coton bio français.</p>
       </div>
       <a href="#">Découvrir</a>

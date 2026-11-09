@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Category;
 use App\Entity\Color;
-use App\Entity\Products;
+use App\Entity\Product;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -17,21 +17,21 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ProductsType extends AbstractType
+class ProductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', TextType::class, [
+            ->add('name', TextType::class, [
                 'label' => 'Nom du produit',
                 'attr' => ['placeholder' => 'Ex. : Robe portefeuille en lin', 'maxlength' => 255],
             ])
             ->add('category', EntityType::class, [
                 'label' => 'Catégorie',
                 'class' => Category::class,
-                'choice_label' => 'nom',
-                'group_by' => fn (Category $category) => $category->getCategoryGroup()?->getNom() ?? 'Autres',
-                'query_builder' => fn (EntityRepository $repository) => $repository->createQueryBuilder('c')->orderBy('c.nom', 'ASC'),
+                'choice_label' => 'name',
+                'group_by' => fn (Category $category) => $category->getCategoryGroup()?->getName() ?? 'Autres',
+                'query_builder' => fn (EntityRepository $repository) => $repository->createQueryBuilder('c')->orderBy('c.name', 'ASC'),
                 'placeholder' => 'Choisir une catégorie',
             ])
             ->add('description', TextareaType::class, [
@@ -39,15 +39,15 @@ class ProductsType extends AbstractType
                 'help' => 'Matière, coupe, conseils d\'entretien… 20 caractères minimum.',
                 'attr' => ['rows' => 6],
             ])
-            ->add('prix_ht', MoneyType::class, [
+            ->add('priceExclVat', MoneyType::class, [
                 'label' => 'Prix HT',
                 'currency' => 'EUR',
                 'html5' => true,
                 'attr' => ['min' => '0.01', 'step' => '0.01', 'placeholder' => '0,00'],
             ])
-            ->add('TVA', ChoiceType::class, [
+            ->add('vatRate', ChoiceType::class, [
                 'label' => 'TVA',
-                // Mêmes valeurs que Products::TVA_RATES (validées côté entité)
+                // Mêmes valeurs que Product::VAT_RATES (validées côté entité)
                 'choices' => [
                     '20 % (taux normal, vêtements et accessoires)' => 20.0,
                     '10 %' => 10.0,
@@ -61,16 +61,16 @@ class ProductsType extends AbstractType
             ->add('colors', EntityType::class, [
                 'label' => 'Coloris disponibles',
                 'class' => Color::class,
-                'choice_label' => 'nom',
+                'choice_label' => 'name',
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,
                 'choice_attr' => fn (Color $color) => [
                     'data-code' => $color->getCode(),
-                    'data-nom' => $color->getNom(),
+                    'data-name' => $color->getName(),
                 ],
             ])
-            ->add('image', FileType::class, [
+            ->add('images', FileType::class, [
                 'label' => 'Photos du produit',
                 'help' => 'JPEG ou PNG, 1 Mo maximum par photo. Vous pouvez en sélectionner plusieurs.',
                 'mapped' => false,
@@ -95,7 +95,7 @@ class ProductsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Products::class,
+            'data_class' => Product::class,
         ]);
     }
 }

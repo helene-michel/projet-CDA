@@ -2,27 +2,23 @@
 
 namespace App\Service;
 
-use App\Entity\Products;
+use App\Entity\Product;
 
-/**
- * Calcul des prix. Products::$TVA contient un taux en pourcentage (20 = 20 %).
- */
+// vatRate is a percentage (20 = 20 %)
 class PriceCalculator
 {
-    public function getPrixTtc(Products $product): float
+    public function getPriceInclVat(Product $product): float
     {
-        if (null === $product->getPrixHt() || null === $product->getTVA()) {
-            throw new \LogicException(\sprintf('Le produit "%s" n\'a pas de prix HT ou de taux de TVA.', $product->getNom()));
+        if (null === $product->getPriceExclVat() || null === $product->getVatRate()) {
+            throw new \LogicException(\sprintf('Le produit "%s" n\'a pas de prix HT ou de taux de TVA.', $product->getName()));
         }
 
-        return $this->ttc($product->getPrixHt(), $product->getTVA());
+        return $this->inclVat($product->getPriceExclVat(), $product->getVatRate());
     }
 
-    /**
-     * Arrondi au centime (arrondi commercial).
-     */
-    public function ttc(float $prixHt, float $tauxTva): float
+    // Rounded to the cent
+    public function inclVat(float $priceExclVat, float $vatRate): float
     {
-        return round($prixHt * (1 + $tauxTva / 100), 2);
+        return round($priceExclVat * (1 + $vatRate / 100), 2);
     }
 }

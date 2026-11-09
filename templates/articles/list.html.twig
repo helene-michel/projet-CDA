@@ -1,28 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ category.nom }}{% endblock %}
-{% block meta_description %}{{ category.nom }} : découvrez notre sélection de créations cousues main par des créatrices françaises.{% endblock %}
+{% block title %}{{ category.name }}{% endblock %}
+{% block meta_description %}{{ category.name }} : découvrez notre sélection de créations cousues main par des créatrices françaises.{% endblock %}
 
-            {% block body %}
+{% block body %}
 <header class="page-head">
     <div class="container-xxl">
-        <div class="breadcrumb-b"><a href="#">Accueil</a> / <span>Vêtements sur-mesure</span></div>
+        <div class="breadcrumb-b">
+            <a href="{{ path('app_base') }}">Accueil</a> /
+            {% if category.categoryGroup %}{{ category.categoryGroup.name }} / {% endif %}
+            <span>{{ category.name }}</span>
+        </div>
         <span class="hero-badge">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path
-                    d="M20 6 9 17l-5-5"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
             100% cousu par des créatrices françaises
-            </span>
-        <h1>Toutes les créations</h1>
-        <p class="count"> 0 pièces disponibles, cousues à la main partout en France.</p>
+        </span>
+        <h1>{{ category.name }}</h1>
     </div>
 </header>
-<!-- ===================== CONTENU ===================== -->
-<section 
+
+<section
     class="container-xxl pb-5"
-    data-controller="filter" 
-    data-filter-route-value="{{ absolute_url(path('app_articles_load', {id:category.id})) }}" 
-    data-filter-max-value="{{ productMax ?? 0 }}"
-    data-filter-csrf-value="{{ csrf_token('products_load') }}"
+    data-controller="filter"
+    data-filter-route-value="{{ absolute_url(path('app_articles_load', {id: category.id})) }}"
+    data-filter-max-value="{{ maxPrice ?? 0 }}"
 >
     <div class="row g-4">
 
@@ -32,79 +33,63 @@
                 <h2>Filtrer</h2>
                 <div class="filter-group">
                     <h3 id="filtre-prix">Prix TTC maximum</h3>
-                    {# "change" : déclenché au relâchement, à la souris, au doigt et au clavier (mouseup ne marche pas en tactile) #}
-                    <input type="range" min="0" max="{{ productMax ?? 0 }}" value="{{ productMax ?? 0 }}" step="1" class="form-range"
+                    {# "change": mouse, touch and keyboard #}
+                    <input type="range" min="0" max="{{ maxPrice ?? 0 }}" value="{{ maxPrice ?? 0 }}" step="1" class="form-range"
                            aria-labelledby="filtre-prix"
                            data-filter-target="choicePrice" data-action="change->filter#priceFilter">
-                    <div class="price-values"><span>0 €</span><span>{{ productMax ?? 0 }} €</span></div>
+                    <div class="price-values"><span>0 €</span><span>{{ maxPrice ?? 0 }} €</span></div>
                 </div>
 
-                <div class="filter-group">
-                    <h3>Caractéristiques</h3>
-                </div>
                 <div class="filter-group my-3">
+                    <h3>Matières</h3>
                     <div class="filter-search">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8578" stroke-width="2">
-                            <circle cx="11" cy="11" r="7"/>
-                            <path d="M21 21l-4.3-4.3"/>
-                        </svg>
-                        <input type="text" id="matiereSearch" data-action="input->filter#matiereSearch" placeholder="Rechercher une matière…">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A8578" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                        <input type="text" data-action="input->filter#materialSearch" placeholder="Rechercher une matière…" aria-label="Rechercher une matière">
                     </div>
-                    <div class="filter-scroll" id="matiereList" data-filter-target="matiereList">
+                    <div class="filter-scroll" data-filter-target="materialList">
                         {% for tag in tags %}
-                            <div class="form-check {{ (loop.index >6)?"filter-extra" }} ">
-                                <input class="form-check-input" type="checkbox"  data-action="click->filter#filterTag" data-id="{{ tag.id }}">
-                                <label class="form-check-label" for="m44">{{ tag.nom }}</label>
-                            </div>
+                        <div class="form-check {{ loop.index > 6 ? 'filter-extra' }}">
+                            <input class="form-check-input" type="checkbox" id="tag-{{ tag.id }}" data-action="click->filter#filterTag" data-id="{{ tag.id }}">
+                            <label class="form-check-label" for="tag-{{ tag.id }}">{{ tag.name }}</label>
+                        </div>
                         {% endfor %}
                     </div>
-                    <button type="button" class="filter-more" id="matiereToggle" data-filter-target="matiereToggle" data-action="click->filter#matiereToggle">Voir toutes les matières</button>
+                    {% if tags|length > 6 %}
+                    <button type="button" class="filter-more" data-filter-target="materialToggle" data-action="click->filter#materialToggle">Voir les {{ tags|length }} matières</button>
+                    {% endif %}
                 </div>
-                <a class="btn-reset" href="{{ path('app_articles', {id:category.id}) }}">Réinitialiser les filtres</a>
+                <a class="btn-reset" href="{{ path('app_articles', {id: category.id}) }}">Réinitialiser les filtres</a>
             </div>
         </aside>
+
         <!-- LISTE DES CRÉATIONS -->
         <div class="col-lg-9">
             <div class="toolbar">
-                <span style="font-size:.88rem; color:#5B6472;">0 résultats</span>
+                <span style="font-size:.88rem; color:#5B6472;" data-filter-target="count" aria-live="polite">Chargement…</span>
                 <div class="d-flex align-items-center gap-3">
-                    <select data-action="filter#orderPrice">
-                        <option value="" selected>Trier par prix</option>
+                    <select data-action="filter#orderPrice" data-filter-target="sort" aria-label="Trier">
+                        <option value="">Trier par prix</option>
                         <option value="ASC">Prix croissant</option>
                         <option value="DESC">Prix décroissant</option>
                     </select>
                 </div>
             </div>
             <div data-filter-target="results" class="row g-4 d-none"></div>
-            <div data-filter-target="skeleton" class="row g-4">
-                {% for i in 1..8 %}
-                    <div class="col-sm-6 col-lg-4">
-                        <div class="product-card">
-                            <div class="product-img p-bleu">
-                                <div class="weave"></div>
-                                <span class="badge-fait-main"></span>
-                                <a href="#" class="fav" aria-label="Ajouter aux favoris">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                         stroke-width="1.8">
-                                        <path d="M12 21c4-4 7-7.5 7-11a7 7 0 0 0-14 0c0 3.5 3 7 7 11Z"/>
-                                    </svg>
-                                </a>
-                            </div>
-                            <div class="product-body">
-                                <h3 class="product-title"></h3>
-                                <span class="product-creator"></span>
-                                <span class="product-price"></span>
-                                <div class="product-footer">
-
-                                    <span class="product-rating">
-                                        <a href= # class="btn-outline-b">Détail</a>
-                                        <a href= # class="btn-primary-b">Panier</a>
-                                    </span>
-                                </div>
-                            </div>
+            <div data-filter-target="skeleton" class="row g-4" aria-hidden="true">
+                {% for i in 1..6 %}
+                <div class="col-sm-6 col-lg-4">
+                    <div class="product-card">
+                        <div class="product-img p-bleu"><div class="weave"></div></div>
+                        <div class="product-body">
+                            <h3 class="product-title"></h3>
+                            <span class="product-creator"></span>
+                            <span class="product-price"></span>
                         </div>
                     </div>
-                {% endfor %} 
-                
-                
-                {% endblock %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

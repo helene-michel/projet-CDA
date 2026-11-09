@@ -17,17 +17,17 @@ class CategoryGroup
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    private ?string $name = null;
 
     /**
      * @var Collection<int, Category>
      */
     #[ORM\OneToMany(targetEntity: Category::class, mappedBy: 'categoryGroup', cascade: ['persist'])]
-    private Collection $Category;
+    private Collection $categories;
 
     public function __construct()
     {
-        $this->Category = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -35,14 +35,14 @@ class CategoryGroup
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->nom;
+        return $this->name;
     }
 
-    public function setNom(string $nom): static
+    public function setName(string $name): static
     {
-        $this->nom = $nom;
+        $this->name = $name;
 
         return $this;
     }
@@ -51,15 +51,15 @@ class CategoryGroup
      * @return Collection<int, Category>
      */
     #[Ignore]
-    public function getCategory(): Collection
+    public function getCategories(): Collection
     {
-        return $this->Category;
+        return $this->categories;
     }
 
     public function addCategory(Category $category): static
     {
-        if (!$this->Category->contains($category)) {
-            $this->Category->add($category);
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
             $category->setCategoryGroup($this);
         }
 
@@ -68,8 +68,7 @@ class CategoryGroup
 
     public function removeCategory(Category $category): static
     {
-        if ($this->Category->removeElement($category)) {
-            // set the owning side to null (unless already changed)
+        if ($this->categories->removeElement($category)) {
             if ($category->getCategoryGroup() === $this) {
                 $category->setCategoryGroup(null);
             }

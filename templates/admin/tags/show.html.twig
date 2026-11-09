@@ -1,9 +1,11 @@
 {% extends 'admin/adminbase.html.twig' %}
 
-{% block title %}Tags{% endblock %}
+{% block title %}Matière{% endblock %}
 
 {% block body %}
-    <h1>Tags</h1>
+<div class="main-area col-12">
+    <div class="content">
+    <h1>Matière</h1>
 
     <table class="table">
         <tbody>
@@ -13,14 +15,16 @@
             </tr>
             <tr>
                 <th>Nom</th>
-                <td>{{ tag.nom }}</td>
+                <td>{{ tag.name }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('admin_app_tags_index') }}">back to list</a>
+    <a href="{{ path('admin_app_tags_index') }}">Retour à la liste</a>
 
     <a href="{{ path('admin_app_tags_edit', {'id': tag.id}) }}">{{ ux_icon('lucide:pencil') }}</a>
 
     {{ include('admin/tags/_delete_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}

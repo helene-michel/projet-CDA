@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\CategoryRepository;
-use App\Repository\ProductsRepository;
+use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,7 +20,7 @@ final class SeoController extends AbstractController
     }
 
     #[Route('/sitemap.xml', name: 'app_sitemap', methods: ['GET'], format: 'xml')]
-    public function sitemap(CategoryRepository $categories, ProductsRepository $products): Response
+    public function sitemap(CategoryRepository $categories, ProductRepository $products): Response
     {
         $response = $this->render('seo/sitemap.xml.twig', [
             'categoryIds' => $categories->findAllIds(),
