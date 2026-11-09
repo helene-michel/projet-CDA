@@ -40,4 +40,19 @@ class CategoryRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    /**
+     * Identifiants uniquement (sitemap), sans hydrater les entités.
+     *
+     * @return int[]
+     */
+    public function findAllIds(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.id')
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getSingleColumnResult()
+        ;
+    }
 }

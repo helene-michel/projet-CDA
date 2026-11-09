@@ -1,13 +1,30 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Products{% endblock %}
+{% block title %}Modifier {{ product.nom }}{% endblock %}
 
 {% block body %}
-    <h1>{{ ux_icon('lucide:pencil') }} Products</h1>
+<main class="seller-page container-xxl py-4 py-lg-5">
+    <nav class="breadcrumb-simple" aria-label="Fil d'Ariane">
+        <a href="{{ path('seller_app_dashboard_seller_dashboard_seller') }}">Espace vendeur</a> /
+        <a href="{{ path('seller_app_products_index') }}">Mes produits</a> /
+        <span aria-current="page">Modifier</span>
+    </nav>
 
-    {{ include('seller/products/_form.html.twig', {'button_label': 'Update'}) }}
+    <header class="seller-head">
+        <div>
+            <h1>Modifier « {{ product.nom }} »</h1>
+            <p class="results-count mb-0">Les champs marqués d'un <span class="required-mark" aria-hidden="true">*</span> sont obligatoires.</p>
+        </div>
+        <a href="{{ path('app_article', { id: product.id }) }}" class="btn-outline-b">Voir la fiche en ligne</a>
+    </header>
 
-    <a href="{{ path('seller_app_products_index') }}">back to list</a>
+    {{ include('seller/products/_form.html.twig', { button_label: 'Enregistrer les modifications' }) }}
 
-    {{ include('seller/products/_delete_form.html.twig') }}
+    {# Hors du formulaire principal : les formulaires imbriqués sont interdits en HTML #}
+    <section class="form-card form-card--danger mt-5" aria-labelledby="product-danger">
+        <h2 id="product-danger">Supprimer ce produit</h2>
+        <p class="form-card__hint">Le produit sera retiré de la boutique. Cette action est irréversible.</p>
+        {{ include('seller/products/_delete_form.html.twig') }}
+    </section>
+</main>
 {% endblock %}

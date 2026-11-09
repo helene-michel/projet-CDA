@@ -1,17 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Créer un compte{% endblock %}
+{% block meta_robots %}noindex, follow{% endblock %}
 
 {% block body %}
 <div  class="container">
     <div class='row'>
         <div class="col-12 d-flex flex-column justify-content-center align-items-center">
-            {% for message in app.flashes('infos') %}
-                    <div class="alert alert-info alert-dismissible fade show">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    </div>
-            {% endfor %}
             <fieldset class="bgForm">
                     <legend><h1 class="h3 my-3 font-weight-normal text-center">Formulaire d'Inscription</h1></legend>
                     {{form_start(form,{'attr': {'class': ' '}})}}

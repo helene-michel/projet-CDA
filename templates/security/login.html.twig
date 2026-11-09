@@ -1,18 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Connexion{% endblock %}
+{% block meta_robots %}noindex, follow{% endblock %}
 
 {% block body %}
-    <form method="post" class="py-5 dots">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
-
-        {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Logout</a>
+    {% if app.user %}
+        {# Déjà connecté : pas de formulaire, on propose de continuer ou de changer de compte. #}
+        <section class="py-5 dots">
+            <div class="d-flex flex-column align-items-center text-center gap-3 py-5">
+                <h1 class="h3 my-3 font-weight-normal">Vous êtes déjà connecté</h1>
+                <p class="mb-0">
+                    Connecté en tant que <strong>{{ app.user.prenom ?: app.user.userIdentifier }}</strong>
+                    {%- if app.user.prenom %} ({{ app.user.userIdentifier }}){% endif %}.
+                </p>
+                <div class="d-flex flex-wrap justify-content-center gap-3 mt-2">
+                    <a href="{{ path('app_base') }}" class="btn-primary-b">Retour à l'accueil</a>
+                    <a href="{{ logout_path() }}" class="btn-outline-b">Se déconnecter</a>
+                </div>
             </div>
-        {% endif %}
+        </section>
+    {% else %}
+    <form method="post" class="py-5 dots">
         <div class="d-flex">
             <div class="col-6 d-flex justify-content-center align-item-center">
                 <fieldset>
@@ -20,11 +28,11 @@
                     <div class="container-md">
                         <div class="formLogin">
                             <label for="username">Email</label>
-                            <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
+                            <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control{{ error ? ' is-invalid' }}" autocomplete="email" required autofocus>
                         </div>
                         <div class="formLogin">
                             <label for="password">mot de passe :</label>
-                            <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+                            <input type="password" name="_password" id="password" class="form-control{{ error ? ' is-invalid' }}" autocomplete="current-password" required>
                             <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
                         </div>
                         <div class ="d-flex justify-content-center">
@@ -62,4 +70,5 @@
 
         
     </form>
+    {% endif %}
 {% endblock %}

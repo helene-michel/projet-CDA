@@ -7,25 +7,38 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProductsRepository::class)]
 class Products
 {
+    /** Taux de TVA français applicables (en %). Float pour la comparaison stricte avec la valeur en base. */
+    public const TVA_RATES = [20.0, 10.0, 5.5, 2.1];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Donnez un nom à votre produit.')]
+    #[Assert\Length(max: 255, maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères.')]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'Décrivez votre produit (matière, coupe, entretien…).')]
+    #[Assert\Length(min: 20, minMessage: 'La description doit faire au moins {{ limit }} caractères.')]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Indiquez un prix.')]
+    #[Assert\Positive(message: 'Le prix doit être supérieur à 0.')]
+    #[Assert\LessThan(value: 100000, message: 'Le prix doit être inférieur à {{ compared_value }} €.')]
     private ?float $prix_ht = null;
 
     #[ORM\Column]
+    #[Assert\NotNull(message: 'Choisissez un taux de TVA.')]
+    #[Assert\Choice(choices: self::TVA_RATES, message: 'Taux de TVA invalide.')]
     private ?float $TVA = null;
     /**
      * @var list<string>
@@ -40,6 +53,7 @@ class Products
     private Collection $Tags;
 
     #[ORM\ManyToOne(inversedBy: 'Products')]
+    #[Assert\NotNull(message: 'Choisissez une catégorie.')]
     private ?Category $category = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
@@ -67,7 +81,7 @@ class Products
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
+    public function setNom(?string $nom): static
     {
         $this->nom = $nom;
 
@@ -78,7 +92,7 @@ class Products
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
@@ -89,7 +103,7 @@ class Products
         return $this->prix_ht;
     }
 
-    public function setPrixHt(float $prix_ht): static
+    public function setPrixHt(?float $prix_ht): static
     {
         $this->prix_ht = $prix_ht;
 
@@ -101,7 +115,7 @@ class Products
         return $this->TVA;
     }
 
-    public function setTVA(float $TVA): static
+    public function setTVA(?float $TVA): static
     {
         $this->TVA = $TVA;
 

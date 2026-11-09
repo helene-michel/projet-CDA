@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /seller/
+Disallow: {{ path('app_cart') }}
+Disallow: {{ path('app_panier') }}
+Disallow: {{ path('app_logout') }}
+Disallow: {{ path('app_verify_email') }}
+
+Sitemap: {{ url('app_sitemap') }}

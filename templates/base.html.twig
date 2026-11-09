@@ -1,9 +1,38 @@
 <!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        {#
+            SEO : dans une page, définir les blocs suivants (tous optionnels)
+              title             -> "<titre> | site_name" (seulement le nom du site si absent)
+              meta_description  -> ~155 caractères max (site_description par défaut)
+              meta_robots       -> "noindex, nofollow" pour les pages privées
+              og_type / og_image
+              structured_data   -> JSON-LD (schema.org)
+            Les blocs doivent rester dans ce layout (pas dans un include) pour être surchargeables.
+            block(...)|trim doit être suivi de |raw : le contenu du bloc est déjà échappé, sinon double échappement.
+        #}
+        {% set route = app.request.attributes.get('_route') %}
+        {% set has_title = block('title') is defined and block('title')|trim is not empty %}
+        {% set has_description = block('meta_description') is defined and block('meta_description')|trim is not empty %}
+        <title>{% if has_title %}{{ block('title')|trim|raw }} | {% endif %}{{ site_name }}</title>
+        <meta name="description" content="{% if has_description %}{{ block('meta_description')|trim|raw }}{% else %}{{ site_description }}{% endif %}">
+        <meta name="robots" content="{% block meta_robots %}{{ route starts with 'seller_' or route starts with 'admin_' ? 'noindex, nofollow' : 'index, follow' }}{% endblock %}">
+        {% if route %}
+            {% set canonical = url(route, app.request.attributes.get('_route_params', {})) %}
+            <link rel="canonical" href="{{ canonical }}">
+            <meta property="og:url" content="{{ canonical }}">
+        {% endif %}
+        <meta property="og:site_name" content="{{ site_name }}">
+        <meta property="og:locale" content="fr_FR">
+        <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+        <meta property="og:title" content="{% if has_title %}{{ block('title')|trim|raw }}{% else %}{{ site_name }}{% endif %}">
+        <meta property="og:description" content="{% if has_description %}{{ block('meta_description')|trim|raw }}{% else %}{{ site_description }}{% endif %}">
+        <meta property="og:image" content="{% block og_image %}{{ absolute_url(asset('icon-512.png')) }}{% endblock %}">
+        <meta name="twitter:card" content="summary">
+
+        {% include 'base/partials/favicons.html.twig' %}
         {% block stylesheets %}
         {% endblock %}
         <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
@@ -22,10 +51,12 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-        
+
+        {% block structured_data %}{% endblock %}
     </head>
     <body>
         {% include 'base/partials/navbar.html.twig' %}
+        {% include 'base/partials/alert.html.twig' %}
         {% block body %}{% endblock %}
     </body>
 </html>

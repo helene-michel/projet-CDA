@@ -15,21 +15,17 @@ class FileUploader
     ) {
     }
 
-    public function upload(UploadedFile $file): ?string
+    /**
+     * @throws FileException si le fichier n'a pas pu être déplacé (à gérer par l'appelant)
+     */
+    public function upload(UploadedFile $file): string
     {
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeFilename = $this->slugger->slug($originalFilename);
         $fileName = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
-        
-        try {
-            $file->move($this->getTargetDirectory(), $fileName);
-            
-        } catch (FileException $e) {
-             dd('error');
-            return false;
-           
-        }
-        
+
+        $file->move($this->getTargetDirectory(), $fileName);
+
         return $fileName;
     }
 

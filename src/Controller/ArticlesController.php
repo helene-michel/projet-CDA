@@ -39,8 +39,9 @@ final class ArticlesController extends AbstractController
         $products = $entityManager->getRepository(Products::class)->getByCategoryAndTags(
             $category->getId(),
             $request->query->all('tags'),
-            $request->query->get('prix'),
-            $request->query->get('tri'),
+            // "59.99" ou "" : float ou null, sans troncature ni erreur de type
+            $request->query->filter('prix', null, \FILTER_VALIDATE_FLOAT, ['flags' => \FILTER_NULL_ON_FAILURE]),
+            $request->query->getString('tri'),
         );
                  
         return $this->json($products, 200);

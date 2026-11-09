@@ -1,11 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Products{% endblock %}
+{% block title %}Ajouter un produit{% endblock %}
 
 {% block body %}
-    <h1>Create new Products</h1>
+<main class="seller-page container-xxl py-4 py-lg-5">
+    <nav class="breadcrumb-simple" aria-label="Fil d'Ariane">
+        <a href="{{ path('seller_app_dashboard_seller_dashboard_seller') }}">Espace vendeur</a> /
+        <a href="{{ path('seller_app_products_index') }}">Mes produits</a> /
+        <span aria-current="page">Ajouter un produit</span>
+    </nav>
 
-    {{ include('seller/products/_form.html.twig') }}
+    <header class="seller-head">
+        <div>
+            <h1>Ajouter un produit</h1>
+            <p class="results-count mb-0">Les champs marqués d'un <span class="required-mark" aria-hidden="true">*</span> sont obligatoires.</p>
+        </div>
+    </header>
 
-    <a href="{{ path('seller_app_products_index') }}">back to list</a>
+    {{ include('seller/products/_form.html.twig', { button_label: 'Créer le produit' }) }}
+</main>
 {% endblock %}

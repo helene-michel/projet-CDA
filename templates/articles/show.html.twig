@@ -1,6 +1,30 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ArticlesController!{% endblock %}
+{% block title %}{{ products.nom }}{% endblock %}
+{% block og_type %}product{% endblock %}
+{% block meta_description %}
+    {%- set description = (products.description ?? '')|striptags|trim -%}
+    {{- description|length > 155 ? description|slice(0, 154) ~ '…' : description -}}
+{% endblock %}
+
+{% block structured_data %}
+    <script type="application/ld+json">
+        {{ {
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            name: products.nom,
+            description: (products.description ?? '')|striptags|trim,
+            url: url('app_article', { id: products.id }),
+            category: products.category ? products.category.nom : null,
+            offers: {
+                '@type': 'Offer',
+                price: prix_ttc(products),
+                priceCurrency: 'EUR',
+                url: url('app_article', { id: products.id }),
+            },
+        }|json_encode(constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_HEX_TAG'))|raw }}
+    </script>
+{% endblock %}
 
 {% block body %}
 
@@ -36,7 +60,7 @@
 						<a href="#">{{ products.User.nom }} {{ products.User.prenom }}</a>
 					</div>
 				</div>
-				<div class="price-big serif">{{ products.prixht }} €</div>
+				<div class="price-big serif">{{ prix_ttc(products)|format_currency('EUR') }} <small class="text-body-secondary fs-6">TTC</small></div>
 
 				<p style="color:#4B5563; max-width:48ch; margin-bottom:1.6rem;">{{ products.description }}</p>
 				<form action="{{ path('app_cart_add',{id:products.id}) }}" method="post" data-controller="product">

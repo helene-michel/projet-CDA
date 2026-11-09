@@ -1,5 +1,8 @@
 import { Controller } from '@hotwired/stimulus';
 
+// Même rendu que format_currency('EUR') côté Twig : "91,20 €"
+const priceFormatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
+
 export default class extends Controller {
 
     static values = {
@@ -134,7 +137,7 @@ export default class extends Controller {
                     <div class="product-body">
                         <h3 class="product-title">${d.nom}</h3>
                         <span class="product-creator">${d.user.nom}</span>
-                        <span class="product-price">${d.prixHt} €</span>
+                        <span class="product-price">${priceFormatter.format(d.prixTtc)}</span>
                         <div class="product-footer">
                             <span class="product-rating">
                                 <a href="${urlDetailArticle}" class="btn-outline-b">Détail</a>

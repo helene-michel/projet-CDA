@@ -1,4 +1,81 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{# Formulaire produit (création / modification). Variables : form, product, button_label #}
+{{ form_start(form, { attr: { class: 'product-form', 'data-controller': 'product-form' } }) }}
+    {{ form_errors(form) }}
+
+    <div class="row g-4">
+        <div class="col-lg-7 d-flex flex-column gap-4">
+            <section class="form-card" aria-labelledby="product-form-infos">
+                <h2 id="product-form-infos">Informations</h2>
+                {{ form_row(form.nom) }}
+                {{ form_row(form.category) }}
+                {{ form_row(form.description) }}
+            </section>
+
+            <section class="form-card" aria-labelledby="product-form-photos">
+                <h2 id="product-form-photos">Photos</h2>
+                {% if product.image is not empty %}
+                    <p class="form-card__hint">Photos actuelles (les nouvelles photos seront ajoutées à la suite) :</p>
+                    <ul class="photo-list">
+                        {% for filename in product.image %}
+                            <li>
+                                <img src="{{ asset('uploads/productImages/' ~ filename) }}"
+                                     alt="Photo {{ loop.index }} de {{ product.nom }}" width="88" height="88" loading="lazy">
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {{ form_row(form.image, { attr: { 'data-action': 'change->product-form#previewImages' } }) }}
+                <ul class="photo-list" data-product-form-target="previews" aria-live="polite"></ul>
+            </section>
+        </div>
+
+        <div class="col-lg-5 d-flex flex-column gap-4">
+            <section class="form-card" aria-labelledby="product-form-prix">
+                <h2 id="product-form-prix">Prix</h2>
+                {{ form_row(form.prix_ht, { attr: {
+                    'data-product-form-target': 'ht',
+                    'data-action': 'input->product-form#updateTtc',
+                } }) }}
+                {{ form_row(form.TVA, { attr: {
+                    'data-product-form-target': 'tva',
+                    'data-action': 'change->product-form#updateTtc',
+                } }) }}
+                <p class="ttc-preview">
+                    Prix affiché aux clientes :
+                    <strong data-product-form-target="ttc" aria-live="polite">—</strong>
+                </p>
+            </section>
+
+            <section class="form-card" aria-labelledby="product-form-coloris">
+                <h2 id="product-form-coloris">Coloris</h2>
+                {% if form.colors|length > 0 %}
+                    <fieldset aria-describedby="product-form-coloris-help">
+                        <legend class="visually-hidden">{{ form.colors.vars.label }}</legend>
+                        <p class="form-card__hint" id="product-form-coloris-help">Cochez les coloris dans lesquels ce produit peut être commandé.</p>
+                        <div class="color-options">
+                            {% for child in form.colors %}
+                                {# Rendu manuel : le thème Bootstrap entoure chaque case de son propre markup #}
+                                <label class="color-option" for="{{ child.vars.id }}">
+                                    <input type="checkbox" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}"
+                                           value="{{ child.vars.value }}"{% if child.vars.checked %} checked{% endif %}>
+                                    <span class="seller-swatch" style="background: {{ child.vars.attr['data-code'] }}" aria-hidden="true"></span>
+                                    {{ child.vars.label }}
+                                </label>
+                                {% do child.setRendered %}
+                            {% endfor %}
+                        </div>
+                        {{ form_errors(form.colors) }}
+                    </fieldset>
+                {% else %}
+                    <p class="form-card__hint mb-0">Aucun coloris n'est encore disponible. Ils sont définis par l'administration.</p>
+                    {% do form.colors.setRendered %}
+                {% endif %}
+            </section>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <a href="{{ path('seller_app_products_index') }}" class="btn-outline-b">Annuler</a>
+        <button type="submit" class="btn-primary-b">{{ button_label }}</button>
+    </div>
 {{ form_end(form) }}

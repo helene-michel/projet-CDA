@@ -1,6 +1,9 @@
 twig:
     file_name_pattern: '*.twig'
     form_themes: ['bootstrap_5_layout.html.twig']
+    globals:
+        site_name: 'Le comptoire des couturiers'
+        site_description: 'Vêtements et accessoires cousus main par des créatrices françaises : découvrez les pièces uniques du comptoire des couturiers.'
 
 when@test:
     twig:

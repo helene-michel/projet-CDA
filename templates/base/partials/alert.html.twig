@@ -1,18 +1,5 @@
-{% for message in app.flashes('infos') %}
-        <div class="alert alert-info alert-dismissible fade show">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>
-{% endfor %}
-{% for message in app.flashes('success') %}
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>
-{% endfor %}
-{% for message in app.flashes('error') %}
-        <div class="alert alert-danger alert-dismissible fade show">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>
-{% endfor %}
+{# Conteneur des notifications (toasts) : affiche les messages flash et les notifications front.
+   Inclus une seule fois par layout, avant le bloc body, pour consommer tous les flashs. #}
+{% set flashes = app.flashes %}
+<div class="notification-stack" aria-live="polite"
+     {{ stimulus_controller('notification', flashes is empty ? {} : { flashes: flashes }) }}></div>
