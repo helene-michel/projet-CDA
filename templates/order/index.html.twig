@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes commandes{% endblock %}
+{% block meta_robots %}noindex, nofollow{% endblock %}
+
+{% block body %}
+<main class="seller-page container-xxl py-4 py-lg-5">
+    <header class="seller-head">
+        <h1>Mes commandes</h1>
+    </header>
+
+    {% if orders is empty %}
+    <div class="seller-empty">
+        {{ ux_icon('lucide:package-open', { 'aria-hidden': 'true', class: 'seller-empty__icon' }) }}
+        <h2>Aucune commande pour le moment</h2>
+        <a href="{{ path('app_base') }}" class="btn-primary-b">Découvrir les créations</a>
+    </div>
+    {% else %}
+    <div class="users-table-wrap">
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Articles</th>
+                    <th scope="col">Statut</th>
+                    <th scope="col" class="num">Total TTC</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.orderedAt|date('d/m/Y H:i') }}</td>
+                    <td>
+                        {% for line in order.lines %}
+                        {{ line.quantity }} × {{ line.productName }}{% if not loop.last %}<br>{% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ order.status.label }}</td>
+                    <td class="num">{{ order.total|format_currency('EUR') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

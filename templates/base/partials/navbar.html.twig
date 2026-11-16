@@ -3,7 +3,7 @@
   <div class="container-xxl">
     <a class="brand-mark" href="{{ path('app_base') }}">
       <img src="{{asset('images/aiguille.png')}}" width="26" height="26" alt="icone aiguille logo" />
-      Le comptoire des couturiers
+      Le comptoir des couturiers
     </a>
 
     <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navlcdc"
@@ -16,7 +16,7 @@
         <li class="nav-item">
           <button type="button" data-action="menu#show" aria-haspopup="true">Créations</button>
         </li>
-        <li class="nav-item"><a href="{{ path('app_base') }}#ateliers">Créatrices</a></li>
+        <li class="nav-item"><a href="{{ path('app_creator_index') }}">Créatrices</a></li>
       </ul>
 
       <div class="nav-actions">
@@ -46,9 +46,9 @@
           {{ ux_icon('lucide:user-round-check', { 'aria-hidden': 'true' }) }}
         </a>
         {% else %}
-        <span class="icon-btn is-connected" title="{{ account_label }}">
-          {{ ux_icon('lucide:user-round-check', { 'aria-label': account_label }) }}
-        </span>
+        <a href="{{ path('app_order') }}" class="icon-btn is-connected" aria-label="Mes commandes, connecté en tant que {{ app.user.displayName }}" title="Mes commandes">
+          {{ ux_icon('lucide:user-round-check', { 'aria-hidden': 'true' }) }}
+        </a>
         {% endif %}
         <a href="{{ path('app_logout') }}" class="nav-logout">Se déconnecter</a>
         {% else %}
@@ -79,10 +79,10 @@
     </div>
     <div class="mega-promo">
       <div>
-        <strong>Le vestiaire bambin arrive sur Le comptoire des couturiers</strong>
+        <strong>Le vestiaire bambin arrive sur Le comptoir des couturiers</strong>
         <p>Petites séries cousues à la main, en coton bio français.</p>
       </div>
-      <a href="#">Découvrir</a>
+      <a href="{{ path('app_base') }}#categories">Découvrir</a>
     </div>
   </div>
 </nav>

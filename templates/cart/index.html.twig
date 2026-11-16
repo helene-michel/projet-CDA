@@ -67,6 +67,16 @@
             </tfoot>
         </table>
     </div>
+    <div class="d-flex justify-content-end mt-4">
+        {% if app.user %}
+        <form method="post" action="{{ path('app_order_checkout') }}" data-turbo="false">
+            <input type="hidden" name="_token" value="{{ csrf_token('checkout') }}">
+            <button type="submit" class="btn-primary-b">Payer {{ total|format_currency('EUR') }}</button>
+        </form>
+        {% else %}
+        <a href="{{ path('app_login') }}" class="btn-primary-b">Se connecter pour commander</a>
+        {% endif %}
+    </div>
     {% endif %}
 </main>
 {% endblock %}

@@ -73,6 +73,19 @@ body {
     background: var(--ivoire);
     -webkit-font-smoothing: antialiased;
 }
+/* Footer at the bottom on short pages */
+.site-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+/* Centered containers (margin: auto) must keep their full width in flex */
+.site-layout > * {
+    width: 100%;
+}
+.site-layout > footer {
+    margin-top: auto;
+}
 h1,
 h2,
 h3,
@@ -600,7 +613,8 @@ input:focus-visible {
     transform: translateY(-5px);
     box-shadow: 0 14px 26px rgba(35, 42, 52, 0.12);
 }
-.atelier-card .avatar {
+.atelier-card .avatar,
+.creator-avatar {
     width: 44px;
     height: 44px;
     border-radius: 50%;
@@ -612,6 +626,13 @@ input:focus-visible {
     font-weight: 500;
     font-size: 1rem;
     margin-bottom: 0.9rem;
+}
+.creator-avatar {
+    width: 64px;
+    height: 64px;
+    margin: 0;
+    font-size: 1.4rem;
+    background: var(--bleu-atelier);
 }
 .atelier-card:nth-child(1) .avatar {
     background: var(--bleu-atelier);
@@ -1296,6 +1317,22 @@ footer a:hover {
     text-decoration: underline;
 }
 /* ---------- Partie détail de l'article ---------- */
+/* ---------- pages statiques (à propos, mentions légales) ---------- */
+.static-page {
+    max-width: 75ch;
+    line-height: 1.7;
+}
+.static-page h2 {
+    font-size: 1.35rem;
+    margin: 2rem 0 0.75rem;
+}
+.static-page__notice {
+    background: var(--ivoire-dark);
+    border-left: 4px solid var(--dore);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+}
+
 /* ---------- fil d'ariane simple (sans page-head) ---------- */
 .breadcrumb-simple {
     font-size: 0.85rem;

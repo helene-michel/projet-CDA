@@ -40,6 +40,11 @@ class Cart
         $this->requestStack->getSession()->set(self::SESSION_KEY, array_values($items));
     }
 
+    public function clear(): void
+    {
+        $this->requestStack->getSession()->remove(self::SESSION_KEY);
+    }
+
     public function getItemCount(): int
     {
         // No session yet: don't start one just for the navbar

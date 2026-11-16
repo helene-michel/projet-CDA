@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos créatrices{% endblock %}
+{% block meta_description %}Découvrez les couturières et ateliers indépendants qui créent les pièces du Comptoir des couturiers.{% endblock %}
+
+{% block body %}
+<header class="page-head">
+    <div class="container-xxl">
+        <div class="breadcrumb-b">
+            <a href="{{ path('app_base') }}">Accueil</a> / <span>Créatrices</span>
+        </div>
+        <h1>Nos créatrices</h1>
+        <p>Des couturières et ateliers indépendants, choisis pour la qualité de leur travail.</p>
+    </div>
+</header>
+
+<section class="container-xxl pb-5">
+    <div class="row g-3">
+        {% for seller in sellers %}
+        <div class="col-sm-6 col-lg-3">
+            <a href="{{ path('app_creator_show', { id: seller.id }) }}" class="atelier-card d-block h-100 text-reset text-decoration-none">
+                <div class="avatar" aria-hidden="true">{{ include('creator/_initials.html.twig') }}</div>
+                <h2 class="h3">{{ seller.companyName }}</h2>
+                <p>{{ seller.description|length > 90 ? seller.description|slice(0, 89) ~ '…' : seller.description }}</p>
+            </a>
+        </div>
+        {% else %}
+        <p class="col-12">Aucune créatrice pour le moment.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

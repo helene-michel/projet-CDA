@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello PanierController!{% endblock %}
+
+{% block body %}
+    {% set panier = app.request.session.get('panier') %}
+
+    {% for  article in panier %}
+        {{ article.id }}
+        {{ article.nom   }}
+    {% endfor %}
+{% endblock %}

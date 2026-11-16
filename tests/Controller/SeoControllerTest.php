@@ -48,7 +48,7 @@ class SeoControllerTest extends WebTestCase
         $this->client->request('GET', '/');
 
         self::assertResponseIsSuccessful();
-        self::assertPageTitleSame('Créations cousues main par des créatrices françaises | Le comptoire des couturiers');
+        self::assertPageTitleSame('Créations cousues main par des créatrices françaises | Le comptoir des couturiers');
         self::assertSelectorExists('html[lang="fr"]');
         self::assertSelectorExists('meta[name="description"][content]');
         self::assertSelectorExists('meta[name="robots"][content="index, follow"]');
@@ -67,7 +67,7 @@ class SeoControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/article/'.$product->getId());
 
         self::assertResponseIsSuccessful();
-        self::assertPageTitleSame('Robe "Camille" & co | Le comptoire des couturiers');
+        self::assertPageTitleSame('Robe "Camille" & co | Le comptoir des couturiers');
         self::assertSelectorExists('meta[property="og:type"][content="product"]');
         $description = $crawler->filter('meta[name="description"]')->attr('content');
         self::assertSame(155, mb_strlen($description));
@@ -84,7 +84,7 @@ class SeoControllerTest extends WebTestCase
     {
         $this->client->request('GET', '/login');
 
-        self::assertPageTitleSame('Connexion | Le comptoire des couturiers');
+        self::assertPageTitleSame('Connexion | Le comptoir des couturiers');
         self::assertSelectorExists('meta[name="robots"][content="noindex, follow"]');
     }
 }

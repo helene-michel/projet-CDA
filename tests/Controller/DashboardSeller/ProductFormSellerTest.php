@@ -41,7 +41,7 @@ class ProductFormSellerTest extends WebTestCase
         $this->client->request('GET', '/seller/products/new');
 
         self::assertResponseIsSuccessful();
-        self::assertPageTitleSame('Ajouter un produit | Le comptoire des couturiers');
+        self::assertPageTitleSame('Ajouter un produit | Le comptoir des couturiers');
         self::assertSelectorTextContains('label[for="product_name"]', 'Nom du produit');
         self::assertSelectorExists('select#product_category option:contains("Robes")');
         self::assertSelectorExists('select#product_vatRate option[data-rate="20"][selected]');

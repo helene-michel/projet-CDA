@@ -1,0 +1,70 @@
+{% extends 'admin/adminbase.html.twig' %}
+
+{% block title %}Commandes{% endblock %}
+
+{% block body %}
+<div class="main-area">
+    <div class="content">
+        <div class="page-title">
+            <h1>Commandes</h1>
+            <p>Suivez toutes les commandes passées sur la plateforme.</p>
+        </div>
+
+        <div class="users-toolbar">
+            <form class="users-search" method="get">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8A8578" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                {% if currentStatus %}<input type="hidden" name="status" value="{{ currentStatus.value }}">{% endif %}
+                <input type="search" name="search" value="{{ app.request.query.get('search') }}" placeholder="Rechercher par n°, client ou email…" aria-label="Rechercher">
+            </form>
+            <div class="filter-tabs">
+                <a href="{{ path('admin_app_order_index') }}" class="{{ not currentStatus ? 'active' }}">Toutes ({{ statusCount|reduce((sum, n) => sum + n, 0) }})</a>
+                <a href="{{ path('admin_app_order_index', {status: 'paid'}) }}" class="{{ currentStatus and currentStatus.value == 'paid' ? 'active' }}">Payées ({{ statusCount['paid'] }})</a>
+                <a href="{{ path('admin_app_order_index', {status: 'pending'}) }}" class="{{ currentStatus and currentStatus.value == 'pending' ? 'active' }}">En attente ({{ statusCount['pending'] }})</a>
+            </div>
+        </div>
+
+        <p class="results-count">Commandes trouvées : {{ orders.getTotalItemCount }}</p>
+
+        <div class="users-table-wrap">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <th>Articles</th>
+                        <th>Statut</th>
+                        <th class="num">Total TTC</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.orderedAt|date('d/m/Y H:i') }}</td>
+                        <td>
+                            <div class="uname">{{ order.user.displayName }}</div>
+                            <div class="uemail">{{ order.user.email }}</div>
+                        </td>
+                        <td>{{ order.lines|reduce((sum, line) => sum + line.quantity, 0) }}</td>
+                        <td><span class="pill {{ order.paid ? 'pill-actif' : 'pill-attente' }}">{{ order.status.label }}</span></td>
+                        <td class="num">{{ order.total|format_currency('EUR') }}</td>
+                        <td>
+                            <div class="row-actions">
+                                <a href="{{ path('admin_app_order_show', {id: order.id}) }}" title="Voir la commande n° {{ order.id }}">{{ ux_icon('lucide:eye') }}</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="7">Aucune commande.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="navigation">
+                {{ knp_pagination_render(orders) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

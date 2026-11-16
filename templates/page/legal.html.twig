@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{# Fill in the bracketed values #}
+{% set editor = {
+    name: 'Hélène MICHEL',
+    email: 'helenemichel59@gmail.com',
+    training: 'Concepteur développeur d\'application',
+} %}
+{% set host = {
+    name: '[Nom de l\'hébergeur]',
+    address: '[Adresse de l\'hébergeur]',
+} %}
+
+{% block title %}Mentions légales{% endblock %}
+{% block meta_description %}Mentions légales, données personnelles et cookies du site {{ site_name }}.{% endblock %}
+
+{% block body %}
+<header class="page-head">
+    <div class="container-xxl">
+        <div class="breadcrumb-b">
+            <a href="{{ path('app_base') }}">Accueil</a> / <span>Mentions légales</span>
+        </div>
+        <h1>Mentions légales</h1>
+    </div>
+</header>
+
+<section class="container-xxl pb-5">
+    <div class="static-page">
+        <div class="static-page__notice">
+            Ce site est un <strong>projet d'étude</strong> réalisé dans le cadre de la formation {{ editor.training }}.
+            Il n'a pas de vocation commerciale : aucune vente réelle n'est effectuée et les paiements
+            se font en mode test.
+        </div>
+
+        <h2>Éditeur du site</h2>
+        <p>
+            {{ editor.name }}<br>
+            Contact : {{ editor.email }}<br>
+            Directeur ou directrice de la publication : {{ editor.name }}
+        </p>
+
+        <h2>Hébergement</h2>
+        <p>
+            {{ host.name }}<br>
+            {{ host.address }}
+        </p>
+
+        <h2>Propriété intellectuelle</h2>
+        <p>
+            Les textes, logos et éléments graphiques du site sont la propriété de leur auteur. Les photos et descriptions
+            des créations appartiennent aux créatrices qui les publient. Toute reproduction sans autorisation est interdite.
+        </p>
+
+        <h2>Données personnelles</h2>
+        <p>Le site collecte uniquement les données nécessaires à son fonctionnement :</p>
+        <ul>
+            <li><strong>Compte</strong> : nom, prénom, adresse email et mot de passe (stocké chiffré), pour vous connecter.</li>
+            <li><strong>Boutique</strong> : nom de l'atelier, description et SIRET pour les créatrices.</li>
+            <li><strong>Commandes</strong> : contenu, montant et statut de vos commandes.</li>
+        </ul>
+        <p>
+            Le paiement est géré par <strong>Stripe</strong>. Vos coordonnées bancaires sont saisies sur la page de Stripe et
+            ne transitent jamais par nos serveurs.
+        </p>
+        <p>
+            Ces données ne sont ni vendues ni cédées à des tiers. Conformément au RGPD, vous pouvez demander
+            l'accès, la rectification ou la suppression de vos données en écrivant à {{ editor.email }}.
+        </p>
+
+        <h2>Cookies</h2>
+        <p>
+            Le site utilise uniquement des cookies techniques, indispensables pour garder votre panier, votre connexion
+            et protéger les formulaires. Aucun cookie publicitaire ni de mesure d'audience n'est déposé :
+            aucun consentement n'est donc nécessaire.
+        </p>
+    </div>
+</section>
+{% endblock %}

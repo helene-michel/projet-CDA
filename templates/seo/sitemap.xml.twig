@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url><loc>{{ url('app_base') }}</loc></url>
+    <url><loc>{{ url('app_creator_index') }}</loc></url>
+    <url><loc>{{ url('app_about') }}</loc></url>
+    <url><loc>{{ url('app_legal') }}</loc></url>
+    <url><loc>{{ url('app_delivery') }}</loc></url>
+    <url><loc>{{ url('app_returns') }}</loc></url>
+    <url><loc>{{ url('app_contact') }}</loc></url>
 {% for id in categoryIds %}
     <url><loc>{{ url('app_articles', { id: id }) }}</loc></url>
 {% endfor %}

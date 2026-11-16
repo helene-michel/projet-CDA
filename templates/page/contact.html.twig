@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact{% endblock %}
+{% block meta_description %}Une question sur une commande, une livraison ou pour devenir créatrice ? Écrivez au {{ site_name }}.{% endblock %}
+
+{% block body %}
+{{ include('page/_head.html.twig', { title: 'Contact' }) }}
+
+<section class="container-xxl pb-5">
+    <div class="static-page">
+        <p>
+            Une question sur une commande, une livraison ou pour ouvrir votre boutique ?
+            Écrivez-nous, nous répondons sous 48 h ouvrées.
+            Pensez à consulter les pages <a href="{{ path('app_delivery') }}">Livraison</a> et <a href="{{ path('app_returns') }}">Retours</a>.
+        </p>
+
+        {{ form_start(form, { attr: { class: 'mt-4', novalidate: 'novalidate' } }) }}
+            <div class="row g-3">
+                <div class="col-md-6">{{ form_row(form.name) }}</div>
+                <div class="col-md-6">{{ form_row(form.email) }}</div>
+            </div>
+            {{ form_row(form.subject) }}
+            {{ form_row(form.message) }}
+            <button type="submit" class="btn-primary-b">Envoyer</button>
+        {{ form_end(form) }}
+    </div>
+</section>
+{% endblock %}

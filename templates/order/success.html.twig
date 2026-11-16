@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande n° {{ order.id }}{% endblock %}
+{% block meta_robots %}noindex, nofollow{% endblock %}
+
+{% block body %}
+<main class="seller-page container-xxl py-4 py-lg-5">
+    <div class="seller-empty">
+        {% if order.paid %}
+        {{ ux_icon('lucide:circle-check', { 'aria-hidden': 'true', class: 'seller-empty__icon' }) }}
+        <h1>Merci pour votre commande !</h1>
+        <p>Votre paiement de {{ order.total|format_currency('EUR') }} a bien été reçu (commande n° {{ order.id }}).</p>
+        {% else %}
+        {{ ux_icon('lucide:clock', { 'aria-hidden': 'true', class: 'seller-empty__icon' }) }}
+        <h1>Paiement en cours de vérification</h1>
+        <p>Nous n'avons pas encore la confirmation de votre paiement pour la commande n° {{ order.id }}.</p>
+        {% endif %}
+        <a href="{{ path('app_order') }}" class="btn-primary-b">Voir mes commandes</a>
+    </div>
+</main>
+{% endblock %}

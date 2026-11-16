@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À propos{% endblock %}
+{% block meta_description %}Le comptoir des couturiers met en relation des couturières et ateliers indépendants avec celles et ceux qui cherchent des pièces cousues main.{% endblock %}
+
+{% block body %}
+<header class="page-head">
+    <div class="container-xxl">
+        <div class="breadcrumb-b">
+            <a href="{{ path('app_base') }}">Accueil</a> / <span>À propos</span>
+        </div>
+        <h1>À propos</h1>
+    </div>
+</header>
+
+<section class="container-xxl pb-5">
+    <div class="static-page">
+        <h2>Notre idée</h2>
+        <p>
+            {{ site_name }} est une marketplace dédiée à la couture française. Elle réunit des couturières
+            et des ateliers indépendants qui créent des vêtements et des accessoires cousus main, en petites séries
+            ou en pièces uniques.
+        </p>
+        <p>
+            Plutôt que de produire en masse, nous voulons rendre visible le travail des artisanes et permettre à chacun
+            d'acheter une pièce durable, en sachant qui l'a fabriquée.
+        </p>
+
+        <h2>Comment ça fonctionne</h2>
+        <ul>
+            <li><strong>Les créatrices</strong> ouvrent leur boutique, présentent leur atelier et mettent leurs créations en ligne.</li>
+            <li><strong>Les clientes et clients</strong> parcourent les créations par univers, filtrent par prix ou par matière, puis commandent en ligne.</li>
+            <li><strong>Le paiement</strong> est sécurisé par notre prestataire de paiement : aucune donnée bancaire n'est conservée sur le site.</li>
+            <li><strong>La plateforme</strong> prélève une commission sur chaque vente ; le reste revient à la créatrice.</li>
+        </ul>
+
+        <h2>Nos engagements</h2>
+        <ul>
+            <li>Des pièces fabriquées en France par des artisanes indépendantes.</li>
+            <li>Des informations claires sur chaque création : matières, tailles, coloris et prix TTC.</li>
+            <li>Une relation directe entre la créatrice et la personne qui achète.</li>
+        </ul>
+
+        <div class="d-flex flex-wrap gap-3 mt-4">
+            <a href="{{ path('app_creator_index') }}" class="btn-primary-b">Découvrir les créatrices</a>
+            <a href="{{ path('app_register') }}" class="btn-outline-b">Devenir créatrice</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

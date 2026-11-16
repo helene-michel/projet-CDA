@@ -28,7 +28,7 @@
                     Plus de 600 couturières partout en France
                 </span>
                 <h1 class="mb-3">La couture faite à la main, juste à côté de chez vous</h1>
-                <p class="lead mb-4">Le comptoire des couturiers réunit des couturières et des ateliers indépendants
+                <p class="lead mb-4">Le comptoir des couturiers réunit des couturières et des ateliers indépendants
                     partout en France, pour des vêtements, tissus et créations sur-mesure, cousus près de chez vous.</p>
                 <div class="d-flex flex-wrap gap-3">
                     <a href="#categories" class="btn-primary-b">Découvrir les créations</a>
@@ -134,16 +134,17 @@
         <div class="section-head">
             <h2>Des créatrices à suivre</h2>
             <p>Une sélection d'ateliers indépendants, choisis pour la qualité de leur travail.</p>
+            <a href="{{ path('app_creator_index') }}" class="btn-outline-b mt-2">Voir toutes les créatrices</a>
         </div>
 
         <div class="row g-3">
             {% for seller in sellers %}
             <div class="col-sm-6 col-lg-3">
-                <div class="atelier-card">
-                    <div class="avatar">{{ seller.companyName|split(' ')|slice(0, 2)|map(word => word|first|upper)|join }}</div>
+                <a href="{{ path('app_creator_show', { id: seller.id }) }}" class="atelier-card d-block h-100 text-reset text-decoration-none">
+                    <div class="avatar" aria-hidden="true">{{ include('creator/_initials.html.twig') }}</div>
                     <h3>{{ seller.companyName }}</h3>
                     <p>{{ seller.description|length > 90 ? seller.description|slice(0, 89) ~ '…' : seller.description }}</p>
-                </div>
+                </a>
             </div>
             {% endfor %}
         </div>

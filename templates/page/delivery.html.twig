@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Livraison{% endblock %}
+{% block meta_description %}Délais, modes et suivi de livraison des créations cousues main du {{ site_name }}.{% endblock %}
+
+{% block body %}
+{{ include('page/_head.html.twig', { title: 'Livraison' }) }}
+
+<section class="container-xxl pb-5">
+    <div class="static-page">
+        <h2>Qui expédie ma commande ?</h2>
+        <p>
+            Chaque création est expédiée directement par la créatrice qui l'a cousue, depuis son atelier.
+            Si votre panier contient des pièces de plusieurs créatrices, vous recevrez donc plusieurs colis.
+        </p>
+
+        <h2>Délais</h2>
+        <ul>
+            <li><strong>Pièce disponible</strong> : préparée et expédiée sous 3 à 5 jours ouvrés.</li>
+            <li><strong>Pièce cousue à la commande</strong> : comptez 2 à 3 semaines, le temps de la fabrication.</li>
+            <li><strong>Acheminement</strong> : 2 à 4 jours ouvrés en France métropolitaine après l'expédition.</li>
+        </ul>
+
+        <h2>Zone de livraison</h2>
+        <p>Nous livrons en France métropolitaine. Les autres destinations ne sont pas encore proposées.</p>
+
+        <h2>Suivi</h2>
+        <p>
+            Vous retrouvez à tout moment vos commandes et leur statut dans
+            {% if app.user %}<a href="{{ path('app_order') }}">Mes commandes</a>{% else %}votre espace « Mes commandes », une fois connecté·e{% endif %}.
+        </p>
+
+        <h2>Un problème ?</h2>
+        <p>Colis en retard ou abîmé : <a href="{{ path('app_contact') }}">contactez-nous</a> en précisant votre numéro de commande.</p>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'admin/adminbase.html.twig' %}
+
+{% block title %}Paiements & commissions{% endblock %}
+
+{% block body %}
+<div class="main-area">
+    <div class="content">
+        <div class="page-title">
+            <h1>Paiements &amp; commissions</h1>
+            <p>Commission de la plateforme et montants à reverser aux vendeur·ses (commandes payées uniquement).</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-top"><span class="stat-label">Ventes encaissées TTC</span></div>
+                <div class="stat-value">{{ totals.revenue|format_currency('EUR') }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-top"><span class="stat-label">Commissions plateforme</span></div>
+                <div class="stat-value">{{ totals.commission|format_currency('EUR') }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-top"><span class="stat-label">À reverser aux vendeur·ses</span></div>
+                <div class="stat-value">{{ totals.payout|format_currency('EUR') }}</div>
+            </div>
+        </div>
+
+        <section class="my-4">
+            <h2 class="h5">Taux de commission</h2>
+            {{ form_start(form, { attr: { class: 'd-flex gap-3 align-items-start flex-wrap' } }) }}
+                {{ form_row(form.commissionRate) }}
+                <button class="btn btn-primary mt-4">Enregistrer</button>
+            {{ form_end(form) }}
+        </section>
+
+        <h2 class="h5">Ventes par vendeur·se</h2>
+        <div class="users-table-wrap">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Vendeur·se</th>
+                        <th class="num">Commandes</th>
+                        <th class="num">Ventes TTC</th>
+                        <th class="num">Commission</th>
+                        <th class="num">À reverser</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in sales %}
+                    <tr>
+                        <td>
+                            {% if row.sellerId %}
+                            <div class="uname"><a href="{{ path('admin_app_user_show', {id: row.sellerId}) }}">{{ row.companyName ?: (row.firstName ~ ' ' ~ row.lastName)|trim ?: row.email }}</a></div>
+                            <div class="uemail">{{ row.email }}</div>
+                            {% else %}
+                            <div class="uname">Compte supprimé</div>
+                            {% endif %}
+                        </td>
+                        <td class="num">{{ row.orderCount }}</td>
+                        <td class="num">{{ row.revenue|format_currency('EUR') }}</td>
+                        <td class="num">{{ row.commission|format_currency('EUR') }}</td>
+                        <td class="num">{{ row.payout|format_currency('EUR') }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5">Aucune vente payée pour le moment.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

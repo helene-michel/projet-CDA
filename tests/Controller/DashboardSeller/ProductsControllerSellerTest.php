@@ -30,7 +30,7 @@ class ProductsControllerSellerTest extends WebTestCase
         $this->client->request('GET', '/seller/products');
 
         self::assertResponseIsSuccessful();
-        self::assertPageTitleSame('Mes produits | Le comptoire des couturiers');
+        self::assertPageTitleSame('Mes produits | Le comptoir des couturiers');
         self::assertSelectorTextContains('.results-count', '1 produit en vente');
         self::assertSelectorTextContains('.seller-products-table', 'Robe de Flora');
         self::assertSelectorTextNotContains('.seller-products-table', 'Jupe de Camille');
